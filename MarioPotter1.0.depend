@@ -1,0 +1,178 @@
+# depslib dependency file v1.0
+1635977259 source:c:\users\jade\desktop\projectmp\mariopotter1.0\main.c
+	"Headers/allHeaders.h"
+
+1635978021 source:c:\users\jade\desktop\projectmp\mariopotter1.0\functions\load_resources.c
+	"../Headers/load_resources.h"
+	"../Headers/allHeaders.h"
+
+1635977396 c:\users\jade\desktop\projectmp\mariopotter1.0\headers\allheaders.h
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<ctype.h>
+	<time.h>
+	"raylib.h"
+	"definitions.h"
+	"structs.h"
+	"load_resources.h"
+
+1635977249 c:\users\jade\desktop\projectmp\mariopotter1.0\headers\definitions.h
+	"allHeaders.h"
+
+1635977249 c:\users\jade\desktop\projectmp\mariopotter1.0\headers\structs.h
+	"allHeaders.h"
+
+1635976583 source:c:\users\jade\desktop\projectmp\mariopotter1.0\functions\menu_functions.c
+
+1635977926 c:\users\jade\desktop\projectmp\mariopotter1.0\headers\load_resources.h
+
+1636770769 source:c:\users\jade\desktop\projectmp\mariopotter1.1\main.c
+	"Headers/all_headers.h"
+
+1636737976 c:\users\jade\desktop\projectmp\mariopotter1.1\headers\structs.h
+	"all_headers.h"
+	"definitions.h"
+
+1636735061 c:\users\jade\desktop\projectmp\mariopotter1.1\headers\all_headers.h
+	<stdio.h>
+	<strings.h>
+	"raylib.h"
+	<time.h>
+	"structs.h"
+	"definitions.h"
+	"generic_use.h"
+	"load_media.h"
+	"menu_functions.h"
+	"get_string.h"
+
+1636738351 c:\users\jade\desktop\projectmp\mariopotter1.1\headers\definitions.h
+	"all_headers.h"
+
+1635988201 source:c:\users\jade\desktop\projectmp\mariopotter1.1\sources\generic_use.c
+	"../Headers/all_headers.h"
+
+1636771105 source:c:\users\jade\desktop\projectmp\mariopotter1.1\sources\load_media.c
+	"../Headers/load_media.h"
+
+1636770651 c:\users\jade\desktop\projectmp\mariopotter1.1\headers\load_media.h
+	"all_headers.h"
+
+1635987867 c:\users\jade\desktop\projectmp\mariopotter1.1\headers\generic_use.h
+	"all_headers.h"
+
+1636734747 c:\users\jade\desktop\projectmp\mariopotter1.1\headers\menu_functions.h
+	"all_headers.h"
+
+1635989291 source:c:\users\jade\desktop\projectmp\mariopotter1.1\sources\sub_menu_functions.c
+
+1636729232 source:c:\users\jade\desktop\projectmp\mariopotter1.1\sources\menu_functions.c
+	"../Headers/menu_functions.h"
+	"../Headers/all_headers.h"
+
+1636727741 c:\users\jade\desktop\projectmp\mariopotter1.1\headers\get_string.h
+	"all_headers.h"
+
+1636739956 source:c:\users\jade\desktop\projectmp\mariopotter1.1\sources\get_string.c
+	"../Headers/get_string.h"
+	<time.h>
+
+1636445577 source:c:\users\jade\desktop\projectmp\mariopotter1.1\sources\load_phase.c
+	"../Headers/load_phase.h"
+	"../Headers/all_headers.h"
+
+1636129849 c:\users\jade\desktop\projectmp\mariopotter1.1\headers\load_phase.h
+	"all_headers.h"
+
+1640432460 source:c:\users\jade\desktop\projectmp\mariopotter\main.c
+	"Headers/all_headers.h"
+
+1637270744 c:\users\jade\desktop\projectmp\mariopotter\headers\all_headers.h
+	<stdio.h>
+	<stdlib.h>
+	<strings.h>
+	"raylib.h"
+	<time.h>
+	<stdlib.h>
+	"structs.h"
+	"create_stuff.h"
+	"definitions.h"
+	"draw_functions.h"
+	"game_functions.h"
+	"get_string.h"
+	"interactions.h"
+	"load_media.h"
+	"menu_functions.h"
+	"movements.h"
+	"generic_use.h"
+
+1640529487 c:\users\jade\desktop\projectmp\mariopotter\headers\structs.h
+	"all_headers.h"
+	"definitions.h"
+
+1640269332 c:\users\jade\desktop\projectmp\mariopotter\headers\definitions.h
+	"all_headers.h"
+
+1635987867 c:\users\jade\desktop\projectmp\mariopotter\headers\generic_use.h
+	"all_headers.h"
+
+1637143632 c:\users\jade\desktop\projectmp\mariopotter\headers\load_media.h
+	"all_headers.h"
+
+1637245672 c:\users\jade\desktop\projectmp\mariopotter\headers\menu_functions.h
+	"all_headers.h"
+
+1637243057 c:\users\jade\desktop\projectmp\mariopotter\headers\get_string.h
+	"all_headers.h"
+
+1635988201 source:c:\users\jade\desktop\projectmp\mariopotter\sources\generic_use.c
+	"../Headers/all_headers.h"
+
+1640263244 source:c:\users\jade\desktop\projectmp\mariopotter\sources\get_string.c
+	"../Headers/get_string.h"
+	<time.h>
+
+1640529487 source:c:\users\jade\desktop\projectmp\mariopotter\sources\load_media.c
+	"../Headers/load_media.h"
+
+1637006533 source:c:\users\jade\desktop\projectmp\mariopotter\sources\load_phase.c
+	"../Headers/load_phase.h"
+	"../Headers/all_headers.h"
+
+1637006533 c:\users\jade\desktop\projectmp\mariopotter\headers\load_phase.h
+	"all_headers.h"
+
+1640432901 source:c:\users\jade\desktop\projectmp\mariopotter\sources\menu_functions.c
+	"../Headers/menu_functions.h"
+	"../Headers/all_headers.h"
+
+1640252358 c:\users\jade\desktop\projectmp\mariopotter\headers\game_functions.h
+	"all_headers.h"
+
+1640529273 source:c:\users\jade\desktop\projectmp\mariopotter\sources\game_functions.c
+	"../Headers/game_functions.h"
+
+1640532251 source:c:\users\jade\desktop\projectmp\mariopotter\sources\draw_functions.c
+	"../Headers/draw_functions.h"
+
+1637325723 c:\users\jade\desktop\projectmp\mariopotter\headers\draw_functions.h
+	"all_headers.h"
+
+1637245128 c:\users\jade\desktop\projectmp\mariopotter\headers\create_stuff.h
+	"all_headers.h"
+
+1637244794 c:\users\jade\desktop\projectmp\mariopotter\headers\interactions.h
+	"all_headers.h"
+
+1637245359 c:\users\jade\desktop\projectmp\mariopotter\headers\movements.h
+	"all_headers.h"
+
+1637351019 source:c:\users\jade\desktop\projectmp\mariopotter\sources\create_stuff.c
+	"../Headers/create_stuff.h"
+
+1637353577 source:c:\users\jade\desktop\projectmp\mariopotter\sources\interactions.c
+	"../Headers/interactions.h"
+
+1639341993 source:c:\users\jade\desktop\projectmp\mariopotter\sources\movements.c
+	"../Headers/movements.h"
+
