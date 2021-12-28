@@ -13,5 +13,6 @@ void continue_game(SRC media);
 void update_ranking(GAME game);
 int is_between(RANKING ranking[RANKING_SIZE], GAME game);
 void ranking_screen(SRC media);
+int choose_who (SRC media);
 
 #endif // _GAME_FUNCTIONS_H_

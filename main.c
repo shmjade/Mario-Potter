@@ -9,7 +9,7 @@ int main(){
     int flagEnd=FALSE;
     int choiceMenu;
     while(!flagEnd){
-        choiceMenu = menu(&media);
+        choiceMenu = menu(media);
         switch(choiceMenu){
             case 0 : play_new_game(media);
                 break;

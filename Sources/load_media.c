@@ -135,11 +135,16 @@ void load_media(SRC *media){
     media->fonteHP = LoadFont("Fonts/fonteHP.TTF");
     media->afterAllthisTime = LoadMusicStream("Audio/afterAllThisTime.mp3");
     media->aboutUs = LoadMusicStream("Audio/about.mp3");
+    media->hat_song = LoadMusicStream("Audio/hat_song.mp3");
     media->HPthemeSong = LoadMusicStream("Audio/HPthemeSong.mp3");
     media->names = LoadMusicStream("Audio/names.mp3");
     media->fast_spell = LoadSound("Audio/fastSpell.wav");
     media->heavy_spell = LoadSound("Audio/heavySpell.wav");
     media->expelliarmus = LoadSound("Audio/expelliarmus.wav");
+    media->imHarry = LoadSound("Audio/voiceHarry.mp3");
+    media->imHermione = LoadSound("Audio/voiceHermione.mp3");
+    media->imRony = LoadSound("Audio/voiceRony.mp3");
+    media->nextPhase = LoadSound("Audio/next_phase.wav");
     media->expectro = LoadSound("Audio/patronum.wav");
     media->harryDied = LoadSound("Audio/harryDied.wav");
     media->harryRight = LoadTexture("Images/harryRight.png");
@@ -168,12 +173,25 @@ void load_media(SRC *media){
     media->recFrameHouses.height = (float)media->houses.height/2;
     media->recFrameHouses.x = (float)media->houses.width/2;
     media->recFrameHouses.y = (float)media->houses.height/2;
+    media->sortingHat = LoadTexture("Images/sorting_hat.png");
+    media->recFrameHat.width = (float)media->sortingHat.width/4;
+    media->recFrameHat.height = (float)media->sortingHat.height;
+    media->recFrameHat.x = (float)media->sortingHat.width/4;
+    media->recFrameHat.y = (float)media->sortingHat.height;
+    media->owl = LoadTexture("Images/owl.png");
+    media->recFrameOwl.width = (float)media->owl.width/12;
+    media->recFrameOwl.height = (float)media->owl.height/8;
+    media->recFrameOwl.x = (float)media->owl.width/12;
+    media->recFrameOwl.y = (float)media->owl.height/8;
     media->podium = LoadTexture("Images/podium.png");
     media->letter = LoadTexture("Images/letter.png");
     media->gryffindor = LoadTexture("Images/gryffindor.png");
     media->hufflepuff = LoadTexture("Images/hufflepuff.png");
     media->ravenclaw = LoadTexture("Images/ravenclaw.png");
     media->slytherin = LoadTexture("Images/slytherin.png");
+    media->envelope = LoadTexture("Images/envelope.png");
+    media->express = LoadTexture("Images/hogwarts_express.png");
+    media->harry = LoadTexture("Images/hogwarts_express.png");
 }
 
 

@@ -87,7 +87,7 @@ int hit_power(PHASE *phase, SRC media){
 ///------------Herói x Inimigo do tipo 2---------------
 int knock_enemy2(Rectangle recCollision, PHASE *phase){
     int i, knock=0;
-    Rectangle recKnock = {recCollision.x-10, recCollision.y-50, recCollision.width+20, 40};
+    Rectangle recKnock = {recCollision.x-20, recCollision.y-50, recCollision.width+40, 80};
     for(i=0; i<phase->activeEnemies2; i++){
         if(CheckCollisionRecs(recKnock, phase->enemies2[i].rec)){
             phase->hero.points += KNOCK_ENEMY;

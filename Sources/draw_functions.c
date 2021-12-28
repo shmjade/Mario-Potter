@@ -169,9 +169,8 @@
 
 
     ///-------------Efeito visual do patrono-----------
-    int time_patronum, framesCounterP=0, currentFrameP=5, framesSpeedP=1;
+    int framesCounterP=0, currentFrameP=5, framesSpeedP=1;
     void draw_patronum(Rectangle rec, SRC media){
-        time_patronum=0;
         Vector2 posText = {200, 300};
         PlaySound(media.expectro);
         Texture2D sprite;
@@ -190,24 +189,49 @@
         DrawTextEx(media.fonteHP, "EXPECTRO PATRONUM", posText, 80, 10, PURPLE);
         delay(140);
     }
+    /*
+    int framesCounterP=0, currentFrameP=5, framesSpeedP=1;
+    void draw_patronum(Rectangle rec, SRC media){
+        Vector2 posText = {200, 300};
+        PlaySound(media.expectro);
+        Texture2D sprite;
+        sprite=media.patronumEffect;
+        Vector2 position = {rec.x-rec.width, rec.y-rec.height}; //centralizando o efeito
+        Rectangle frameRec = media.recFramePatronum;
+        framesCounterP++;
+        if (framesCounterP >= 1200){
+            framesCounterP = 0;
+            currentFrameP--;
+            if(currentFrameP<1)
+                currentFrameP = 5;
+        }
+        frameRec.x = (float)currentFrameP*(float)sprite.width/12;
+        DrawTextureRec(sprite, frameRec, position, WHITE);  // Draw part of the texture
+        DrawTextEx(media.fonteHP, "EXPECTRO PATRONUM", posText, 80, 10, PURPLE);
+        delay(140);
+    }
+    */
 
     ///------------------Ganhou o jogo-----------------
-int time_win;
+
+#define SIZE 17
+int time_win=0;
 void win_game(SRC media){
-    int time_text=0;
-//    char text[8] = "YOU WON";
-    time_win=0;
-    while(time_win<60*200){
-        if(time_win%60)
-            time_text++;
-        BeginDrawing();
-        ClearBackground(GREEN);
-//        for(int i=0; i<8; i++){
-//            DrawText(text[i], 100+i*10, 50, BLACK);
-//            DrawText(text[i], 100+i*10, 50, BLACK);
-//        }
-        EndDrawing();
+    int time_text=1, i=0;
+    char text[SIZE] = "M\0ISCHIEF MANAGED";
+    while(time_win<60*10){
         time_win++;
+        i++;
+        if(i==7 && time_text<SIZE-1){
+            text[time_text] = text[time_text+1];
+            text[time_text+1] = '\0';
+            time_text++;
+            i=0;
+        }
+        BeginDrawing();
+        ClearBackground(GOLD);
+        DrawText(text, (SCREEN_WIDTH-MeasureText(text, 50))/2, 300, 50, BLACK);
+        EndDrawing();
     }
 }
 
@@ -218,12 +242,13 @@ void win_game(SRC media){
     ///---------------Escolher a casa----------------
 const int maxString = 30;
 int two_answers(SRC media, char question[maxString], char opt1[maxString], char opt2[maxString]){
-    Vector2 coordTitle = (Vector2){400,55}; //Coordenada do título
+    Vector2 coordTitle = (Vector2){400,275}; //Coordenada do título
     int selected=0;
     int fontSize=40;
     Color color1=RED, color2=BLACK;
     //---------- Atualizações ------------
     while(!IsKeyPressed(KEY_ENTER)){
+        UpdateMusicStream(media.hat_song);
         if(IsKeyPressed(KEY_UP)){
             PlaySound(media.fast_spell);
             selected=0;
@@ -239,24 +264,88 @@ int two_answers(SRC media, char question[maxString], char opt1[maxString], char 
         //Desenhos:
         BeginDrawing();
         ClearBackground(SKYBLUE);
+        draw_hat(media);
         DrawTextEx(media.fonteHP, "SORTING HAT", coordTitle, 80, 5, BLACK);
-        DrawText(question, (SCREEN_WIDTH-MeasureText(question, fontSize))/2, 200, fontSize, BLACK);
-        DrawText(opt1, (SCREEN_WIDTH-MeasureText(opt1, fontSize))/2, 300, fontSize, color1);
-        DrawText(opt2, (SCREEN_WIDTH-MeasureText(opt2, fontSize))/2, 400, fontSize, color2);
+        DrawText(question, (SCREEN_WIDTH-MeasureText(question, fontSize))/2, 400, fontSize, BLACK);
+        DrawText(opt1, (SCREEN_WIDTH-MeasureText(opt1, fontSize))/2, 500, fontSize, color1);
+        DrawText(opt2, (SCREEN_WIDTH-MeasureText(opt2, fontSize))/2, 600, fontSize, color2);
         EndDrawing();
     }
     PlaySound(media.heavy_spell);
-    delay(20);
+    delay(10);
     return selected;
 }
 
 int time_letter=0;
 void letter(SRC media){
     while(time_letter<60*5){ //esperar 10 segundos
+        UpdateMusicStream(media.HPthemeSong);
         time_letter++;
         BeginDrawing();
         ClearBackground(BLACK);
         DrawTexture(media.letter,(SCREEN_WIDTH-569)/2, 0, WHITE);
+        EndDrawing();
+    }
+}
+
+
+int active=0, collected=0;
+void catch_letter(SRC media){
+    Vector2 pos_owl = {SCREEN_WIDTH, 15};
+    Rectangle rec_letter = {-10, -10, media.envelope.width, media.envelope.height};
+    HERO hero;
+    hero.rec = (Rectangle) {600, SCREEN_HEIGHT-GROUND_HEIGHT, media.recFrameEnemies.width, media.recFrameEnemies.height};
+    hero.afterDeath = 0;
+    hero.direction=1;
+    hero.speedX=3;
+    PlayMusicStream(media.HPthemeSong);
+    //Vector2 pos_player = {600, SCREEN_HEIGHT-GROUND_HEIGHT};
+    while(!collected){
+        UpdateMusicStream(media.HPthemeSong);
+        ///----------- Coruja ----------------
+        pos_owl.x -= 6;
+        if(pos_owl.x<0)
+            pos_owl.x=SCREEN_WIDTH;
+        if(IsKeyDown(KEY_RIGHT)){
+            hero.rec.x += hero.speedX;
+            hero.direction = 1;
+            if(hero.rec.x>SCREEN_WIDTH)
+                hero.rec.x=0;
+        }
+        ///---------- Carta ------------
+        if(pos_owl.x == SCREEN_WIDTH/2){
+            rec_letter.x = pos_owl.x;
+            rec_letter.y = pos_owl.y;
+            active=1;
+        }
+        if(active){
+            rec_letter.x -= 7;
+            if(rec_letter.x<0)
+                rec_letter.x=SCREEN_WIDTH;
+            rec_letter.y += 3;
+            if(rec_letter.y > SCREEN_HEIGHT){
+                rec_letter.x = pos_owl.x;
+                rec_letter.y = pos_owl.y;
+            }
+            DrawTexture(media.envelope, rec_letter.x, rec_letter.y, WHITE);
+        }
+        if(CheckCollisionRecs(hero.rec, rec_letter))
+            collected=1;
+
+        ///---------- Herói ------------
+        if(IsKeyDown(KEY_LEFT)){
+            hero.direction = -1;
+            hero.rec.x -= hero.speedX;
+            if(hero.rec.x<0)
+                hero.rec.x=SCREEN_WIDTH;
+        }
+        BeginDrawing();
+        ClearBackground(SKYBLUE);
+        draw_hero(hero, media);
+        if(time(NULL)%2)
+            DrawTextEx(media.fonteHP, "COLLECT THE LETTER", (Vector2) {330, 300}, 60, 5, GRAY);
+        draw_owl(pos_owl, media);
+        DrawTexture(media.envelope, rec_letter.x, rec_letter.y, WHITE);
         EndDrawing();
     }
 }
@@ -267,7 +356,9 @@ void hat(SRC media){
     Vector2 coord2 = {(SCREEN_WIDTH-MeasureTextEx(media.fonteHP, "PUT YOU AT THE", 80, 5).x)/2, 350};
     Vector2 coord3 = {(SCREEN_WIDTH-MeasureTextEx(media.fonteHP, "RIGHT HOUSE", 80, 5).x)/2, 450};
     Vector2 coord4 = {(SCREEN_WIDTH-MeasureTextEx(media.fonteHP, "Answer to enter a house", 60, 5).x)/2, 550};
-    while(time_hat<60*10){ //esperar 10 segundos
+    PlayMusicStream(media.hat_song);
+    while(time_hat<60*7){ //esperar 10 segundos
+        UpdateMusicStream(media.hat_song);
         time_hat++;
         BeginDrawing();
         ClearBackground(BLACK);
@@ -280,10 +371,45 @@ void hat(SRC media){
         DrawTexture(media.hufflepuff, 5, 470, WHITE);
         DrawTexture(media.gryffindor, 1020, 0, WHITE);
         DrawTexture(media.ravenclaw, 1020, 470, WHITE);
+        draw_hat(media);
         EndDrawing();
     }
 }
 
+int framesCounterO=0, currentFrameO=0, framesSpeedO=5;
+void draw_owl(Vector2 pos_owl, SRC media){
+    Texture2D sprite;
+    sprite=media.owl;
+    Rectangle frameRec = media.recFrameOwl;
+
+    framesCounterO++;
+    if (framesCounterO >= (60/framesSpeedO)){
+        framesCounterO = 0;
+        currentFrameO++;
+        if(currentFrameO>3)
+            currentFrameO = 0;
+    }
+    frameRec.x = (float)currentFrameO*(float)sprite.width/12;
+    DrawTextureRec(sprite, frameRec, pos_owl, WHITE);  // Draw part of the texture
+}
+
+int framesCounterH=0, currentFrameH=0, framesSpeedH=5;
+void draw_hat(SRC media){
+    Texture2D sprite;
+    Vector2 position={500,20};
+    sprite=media.sortingHat;
+    Rectangle frameRec = media.recFrameHat;
+
+    framesCounterH++;
+    if (framesCounterH >= (60/framesSpeedH)){
+        framesCounterH = 0;
+        currentFrameH++;
+        if(currentFrameH>3)
+            currentFrameH = 0;
+    }
+    frameRec.x = (float)currentFrameH*(float)sprite.width/4;
+    DrawTextureRec(sprite, frameRec, position, WHITE);  // Draw part of the texture
+}
 
 int sorting_hat(SRC media){
     char sly[3][20] = {"Pride", "Ambitious", "Cunning"};
@@ -292,12 +418,9 @@ int sorting_hat(SRC media){
     char huf[3][20] = {"Loyal", "Patient", "Friendly"};
     char house[3][20];
 
-    Vector2 coordTitle = (Vector2){150,75}; //Coordenada do título
+//    Vector2 coordTitle = (Vector2){150,75}; //Coordenada do título
     Vector2 pos;
     Color background;
-    //Tocar música de fundo:
-    SetMusicVolume(media.afterAllthisTime, 1.0);
-    PlayMusicStream(media.afterAllthisTime);
 
     int gryffindor=0, ravenclaw=0, slytherin=0, hufflepuff=0, chosen;
     if(two_answers(media, "Dusk or dawn?", "Dusk", "Dawn")==0){
@@ -370,6 +493,7 @@ int sorting_hat(SRC media){
     }
     Rectangle rec = {media.recFrameHouses.x*pos.x, media.recFrameHouses.y*pos.y, media.recFrameHouses.width, media.recFrameHouses.height};
     while(!IsKeyDown(KEY_SPACE)){
+        UpdateMusicStream(media.hat_song);
         BeginDrawing();
         ClearBackground(background);
         DrawTextEx(media.fonteHP, "You've been selected to:", (Vector2) {350, 100}, 80, 2, BLACK);
@@ -393,6 +517,23 @@ int sorting_hat(SRC media){
     }
     return chosen;
 }
+
+int time_next=0;
+void next_phase(SRC media){
+    Vector2 pos={SCREEN_WIDTH, 293};
+    while(time_next<60*5){
+        //PlaySound(media.nextPhase);
+        pos.x-=5;
+        time_next++;
+        BeginDrawing();
+        ClearBackground(SKYBLUE);
+        DrawTexture(media.express, pos.x, pos.y, WHITE);
+        DrawText("Next phase", 450, 300, 50, BLACK);
+        EndDrawing();
+    }
+    time_next=0;
+}
+
 
 /*
 int house_choice(SRC media){

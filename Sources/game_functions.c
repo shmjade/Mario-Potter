@@ -12,6 +12,8 @@ void play_new_game(SRC media){
 
     //Coletar o nome do jogador:
     get_string("What's your name?", newGame.namePlayer, media);
+    newGame.phase.hero.who = choose_who(media);
+    catch_letter(media);
     letter(media);
     hat(media);
     newGame.house = sorting_hat(media);
@@ -23,16 +25,17 @@ void play_new_game(SRC media){
         printf("fase: %d", newGame.phase.level);
         flag_next=play_phase(&newGame.phase, media, &flag_save, newGame.namePlayer);
         if(flag_next){
-            DrawText("Next phase", 450, 300, 50, BLACK);
+            PlaySound(media.nextPhase);
+            next_phase(media);
             level++;
-            delay(60);
+            update_phase(&newGame, journey);
         }
         if(level==JOURNEY_SIZE)
             flag_win=1;
-        update_phase(&newGame, journey);
+
     }while(flag_next && !flag_win);
     if(flag_win)
-        win_game(media);
+       win_game(media);
     update_ranking(newGame);
 }
 
@@ -101,6 +104,24 @@ void update_phase(GAME *game, PHASE journey[]){
     journey[game->phase.level].powerHits = game->phase.powerHits; //mantém a quantidade de vezes que pode usar o botão Power
 }
 
+int choose_who (SRC media){
+    delay(20);
+    int choice=HARRY; //Por definição: HERMIONE=0, RONY=1, HARRY=2, NEVILLE=3
+    char title[17] = "POLYJUICE POTION";
+    char subtitle[30] = "choose who you want to be";
+    int fontSize=80;
+    Sound voice[4];
+    Vector2 posTitle = (Vector2) {(SCREEN_WIDTH - MeasureTextEx(media.fonteHP, title, fontSize, 5).x)/2, 50};
+    Vector2 posSub = (Vector2) {(SCREEN_WIDTH - MeasureTextEx(media.fonteHP, subtitle, fontSize/2, 5).x)/2, 140};
+    while(!IsKeyPressed(KEY_ENTER)){
+        BeginDrawing();
+        ClearBackground(BLACK);
+        DrawTextEx(media.fonteHP, title, posTitle, fontSize, 5, WHITE);
+        DrawTextEx(media.fonteHP, subtitle, posSub, fontSize/2, 5, WHITE);
+        EndDrawing();
+    }
+    return choice;
+}
 /*
 ///---------------Salva o jogo em um arquivo binário-------------
 int save_game(GAME *game){
@@ -437,7 +458,7 @@ void continue_game(SRC media){
     load_journey(journey, media);
     get_string("What's your name?", game.namePlayer, media);
     int level;
-    int flag_save=0;
+    int flag_save=0, flag_win=0, flag_next=0;
     FILE *arq;
 
     ///Abertura do arquivo
@@ -450,11 +471,17 @@ void continue_game(SRC media){
     level--; //Se a fase é 1, será a posição 0 do vetor journey;
 
     game.phase = load_old_phase(journey[level], game.namePlayer, media);
-    printf("Carregou a phase");
-    printf("Antes de jogar");
 
-    play_phase(&game.phase, media, &flag_save, game.namePlayer);
+    do{
+    printf("\n------Fase: %d", game.phase.level);
+        if(flag_next = play_phase(&game.phase, media, &flag_save, game.namePlayer))
+            game.phase.level++;
+        if(game.phase.level==7)
+            flag_win=1;
+    }while(flag_next && !flag_win);
     update_ranking(game);
+    if(flag_win)
+        win_game(media);
 }
 
 ///-------------------RANKING-------------------
@@ -466,6 +493,7 @@ void update_ranking(GAME game){
         printf("Erro na abertura do arquivo\n");
     else
         fread(&ranking, sizeof(RANKING), 1, arq); //os dados já estão na ordem correta
+    fclose(arq);
     printf("Sly: %d", ranking[0].pointsSly);
     if(game.phase.hero.points>ranking->points){
         ranking->points = game.phase.hero.points;
@@ -552,6 +580,59 @@ void ranking_screen(SRC media){
     }
     int places[4] = {GRYFFINDOR, HUFFLEPUFF, RAVENCLAW, SLYTHERIN};
     int houses[4] = {ranking->pointsGryf, ranking->pointsHuf, ranking->pointsRav, ranking->pointsSly};
+    Texture2D housesIMG[4] = {media.gryffindor, media.hufflepuff, media.ravenclaw, media.slytherin}, a_img;
+    int i, j, aux, temp;
+    for(i=0;i<4;i++){
+        for(j=i+1;j<4;j++){
+            if(houses[i] >= houses[j]){
+                aux=houses[i];
+                temp=places[i];
+                a_img=housesIMG[i];
+                houses[i]=houses[j];
+                houses[j]=aux;
+                housesIMG[i]=housesIMG[j];
+                housesIMG[j]=a_img;
+                places[i]=places[j];
+                places[j]=temp;
+            }
+        }
+    }
+    Vector2 position[3];
+    Vector2 posTitle = {325, 60};
+    position[0] = (Vector2) {510, 230};
+    position[1] = (Vector2) {320, 310};
+    position[2] = (Vector2) {700, 310};
+
+    char champion[] = "Hogwarts champion: ";
+    strcat(champion, ranking->name);
+    do{
+        BeginDrawing();
+        DrawTextEx(media.fonteHP, "House Cup Results", posTitle, 100, 2, WHITE);
+        DrawText(champion, (SCREEN_WIDTH-MeasureText(champion, 40))/2, 180, 40, RAYWHITE);
+        ClearBackground(BLACK);
+        DrawTexture(media.podium, 300, 300, WHITE);
+        char temp[10];
+        for(i=0; i<3; i++){
+            DrawTexture(housesIMG[i], position[i].x, position[i].y, WHITE);
+            DrawText(itoa(houses[i], temp, 10), position[i].x+30, position[i].y-30, 30, WHITE);
+        }
+        EndDrawing();
+    }while(!IsKeyDown(KEY_ENTER));
+}
+
+/*
+void ranking_screen(SRC media){
+    RANKING ranking[RANKING_SIZE];
+    FILE *arq;
+    if(!(arq = fopen("highscores.bin", "rb+"))){ //sinaliza se houve erro na abertura do arquivo
+        printf("Erro na abertura do arquivo\n");
+    }else{
+        ///-------------Leitura dos dados--------------
+        for(int i=0; i<RANKING_SIZE; i++)
+            fread(&ranking[i], sizeof(RANKING), 1, arq); //os dados já estão na ordem correta
+    }
+    int places[4] = {GRYFFINDOR, HUFFLEPUFF, RAVENCLAW, SLYTHERIN};
+    int houses[4] = {ranking->pointsGryf, ranking->pointsHuf, ranking->pointsRav, ranking->pointsSly};
     int i, j, aux, temp;
     for(i=0;i<4;i++){
         for(j=i+1;j<4;j++){
@@ -607,7 +688,7 @@ void ranking_screen(SRC media){
         EndDrawing();
     }while(!IsKeyDown(KEY_ENTER));
 }
-
+*/
 
 
 

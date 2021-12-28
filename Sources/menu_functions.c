@@ -59,26 +59,31 @@ void after_all(SRC *media, int *flagEnd){
     *flagEnd = input;
 }
 
-
-
-int menu(SRC *media){
+int menu(SRC media){
     Vector2 coordTitle = (Vector2){140,45}; //Coordenada do título
 
     //Inicialização
-    SetMusicVolume(media->HPthemeSong, 1.0); //Escolhendo o volume da música
-    PlayMusicStream(media->HPthemeSong); //Tocando a música tema
+    SetMusicVolume(media.HPthemeSong, 1.0); //Escolhendo o volume da música
+    PlayMusicStream(media.HPthemeSong); //Tocando a música tema
 
     Vector2 posFront = {900, 400};
     Vector2 posFrontHP = {200, 400};
-    Vector2 posDraco = { -100, 637};
-    Vector2 position = { 0, 637.0f };
-    Rectangle frameRec = { 0.0f, 0.0f, (float)media->harryRight.width/6, (float)media->harryRight.height };
-    Rectangle frameDraco = { 0.0f, 0.0f, (float)media->dracoRight.width/3, (float)media->dracoRight.height };
-    Rectangle frameFront = { 0.0f, 0.0f, (float)media->dracoFront.width/3, (float)media->dracoFront.height };
-    Rectangle frameFrontHP = { 0.0f, 0.0f, (float)media->harryFront.width/5, (float)media->harryFront.height };
-    int currentFrame = 0;
+    Vector2 posDraco = {-100, 637};
+    Vector2 posUmbridge = {-200, 637};
+    Vector2 position = {0, 637.0f};
+    Vector2 posRony = {100, 637};
+    Vector2 posHermione = {200, 637};
+    Vector2 posHarry = {300, 637};
+    Rectangle frameRec = (Rectangle) media.recFrameEnemies;
+    Rectangle frameDraco = (Rectangle) media.recFrameEnemies;
+    Rectangle frameHarry = (Rectangle) media.recFrameEnemies;
+    Rectangle frameHermione = (Rectangle) media.recFrameEnemies;
+    Rectangle frameRony = (Rectangle) media.recFrameEnemies;
+    Rectangle frameFront = { 0.0f, 0.0f, (float)media.dracoFront.width/3, (float)media.dracoFront.height };
+    Rectangle frameFrontHP = { 0.0f, 0.0f, (float)media.harryFront.width/4, (float)media.harryFront.height };
+    int currentFrame = 0, currentFrameD=3, currentFrameH=6, currentFrameM=0, currentFrameR=3;
     int framesCounter = 0;
-    int framesSpeed = 4;
+    int framesSpeed = 6;
 
     //Definições:
     SetTargetFPS(60); //Velocidade de reprodução do jogo (frames per second)
@@ -117,20 +122,20 @@ int menu(SRC *media){
 
     //Loop principal (da tecla ENTER):
     do{ //Enquanto não apertar enter
-        UpdateMusicStream(media->HPthemeSong);
+        UpdateMusicStream(media.HPthemeSong);
         //Atualizações:
         if(IsKeyPressed(KEY_UP)){ //Se apertar tecla para cima
             if(selected==0)    //Se for o primeiro da lista, ir para o último
                 selected = MENU_OPTIONS-1;
             else
                 selected--;    //Senão for o primeiro da lista, diminuir o índice (subir uma posição)
-            PlaySound(media->fast_spell);
+            PlaySound(media.fast_spell);
         }else if(IsKeyPressed(KEY_DOWN)){ //Se apertar tecla para baixo
             if(selected==MENU_OPTIONS-1) //Se for o último da lista, ir para o primeiro
                 selected = 0;
             else
                 selected++;    //Senão for o último da lista, aumentar o índice (descer uma posição)
-            PlaySound(media->fast_spell);
+            PlaySound(media.fast_spell);
         }
         if(position.x>SCREEN_WIDTH)
             position.x=0;
@@ -140,51 +145,84 @@ int menu(SRC *media){
             posDraco.x=0;
         else
             posDraco.x+=3;
+        if(posHarry.x>SCREEN_WIDTH)
+            posHarry.x=0;
+        else
+            posHarry.x+=3;
+        if(posRony.x>SCREEN_WIDTH)
+            posRony.x=0;
+        else
+            posRony.x+=3;
+        if(posHermione.x>SCREEN_WIDTH)
+            posHermione.x=0;
+        else
+            posHermione.x+=3;
         framesCounter++;
         if (framesCounter >= (60/framesSpeed)){
             framesCounter = 0;
             currentFrame++;
-
-            if(currentFrame >4)
-                currentFrame = 0;
-
-            frameRec.x = (float)currentFrame*(float)media->harryRight.width/6;
-            frameDraco.x = (float)currentFrame*(float)media->dracoRight.width/3;
-            frameFront.x = (float)currentFrame*(float)media->dracoFront.width/3;
-            frameFrontHP.x = (float)currentFrame*(float)media->harryFront.width/4;
+            currentFrameD++;
+            currentFrameH++;
+            currentFrameM++;
+            currentFrameR++;
         }
+        if(currentFrame>2)
+            currentFrame = 0;
+        if(currentFrameD>5)
+            currentFrameD = 3;
+        if(currentFrameH>8)
+            currentFrameH = 6;
+        if(currentFrameM>2)
+            currentFrameM = 0;
+        if(currentFrameR>5)
+            currentFrameR = 3;
+
+        frameRec.x = (float)currentFrame*(float)media.recFrameEnemies.x;
+        frameRec.y = (float)media.recFrameEnemies.y*2;
+        frameDraco.x = (float)currentFrameD*(float)media.recFrameEnemies.x;
+        frameDraco.y = (float)media.recFrameEnemies.y*2;
+        frameHarry.x = (float)currentFrameH*(float)media.recFrameEnemies.x;
+        frameHarry.y = (float)media.recFrameEnemies.y*6;
+        frameHermione.x = (float)currentFrameM*(float)media.recFrameEnemies.x;
+        frameHermione.y = (float)media.recFrameEnemies.y*6;
+        frameRony.x = (float)currentFrameR*(float)media.recFrameEnemies.x;
+        frameRony.y = (float)media.recFrameEnemies.y*6;
+        frameFront.x = (float)currentFrame*(float)media.dracoFront.width/3;
+        frameFrontHP.x = (float)currentFrame*(float)media.harryFront.width/4;
 
 
         //Desenhos:
         BeginDrawing();
         ClearBackground(SKYBLUE);
-        DrawTextEx(media->fonteHP, "MARIO POTTER", coordTitle, 150, 5, BLACK);
+        DrawTextEx(media.fonteHP, "MARIO POTTER", coordTitle, 150, 5, BLACK);
         for(i=0; i<MENU_OPTIONS; i++){
-            if(i==selected){
+            if(i==selected)
                 color=colorSelected;
-            }else{
+            else
                 color=colorDefault;
-            }
             DrawText(messages[i], posx[i], posy[i], fontSize, color);
         }
         if(time(NULL)%2)
             DrawText("Press ENTER to select", 400, 240, 35, BLACK);
 
-        DrawTextureRec(media->harryRight, frameRec, position, WHITE);  // Draw part of the texture
-        DrawTextureRec(media->dracoRight, frameDraco, posDraco, WHITE);
-        DrawTextureRec(media->dracoFront, frameFront, posFront, WHITE);
-        DrawTextureRec(media->harryFront, frameFrontHP, posFrontHP, WHITE);
+        DrawTextureRec(media.enemies, frameRec, position, WHITE);  // Draw part of the texture
+        DrawTextureRec(media.enemies, frameDraco, posDraco, WHITE);
+        DrawTextureRec(media.enemies, frameHarry, posHarry, WHITE);
+        DrawTextureRec(media.enemies, frameRony, posRony, WHITE);
+        DrawTextureRec(media.enemies, frameHermione, posHermione, WHITE);
+        DrawTextureRec(media.dracoFront, frameFront, posFront, WHITE);
+        DrawTextureRec(media.harryFront, frameFrontHP, posFrontHP, WHITE);
         EndDrawing();
     }while(!IsKeyDown(KEY_ENTER));
+    PlaySound(media.heavy_spell);
     delay(20);
-    PlaySound(media->heavy_spell);
     return selected;
 }
 
 void delay(int time){
     for(int i=0; i<time; i++){
-    BeginDrawing();
-    EndDrawing();
+        BeginDrawing();
+        EndDrawing();
     }
 }
 

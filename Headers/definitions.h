@@ -29,6 +29,12 @@
 #define RAVENCLAW 2
 #define SLYTHERIN 3
 
+//Personagens:
+#define HERMIONE 0
+#define RONY 1
+#define HARRY 2
+#define NEVILLE 3
+
 //Quantidades máximas:
 #define MAX_PLAYERS 5 //Quantidade máxima de jogadores cadastrados:
 #define MENU_OPTIONS 7

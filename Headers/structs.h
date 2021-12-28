@@ -6,6 +6,7 @@
 
 //Herói:
 typedef struct{
+    int who; //HERMIONE, HARRY, RONY, NEVILLE
     int speedX; //Podemos escolher
     int direction; //Direção: LEFT ou RIGHT
     Rectangle rec; //guarda o tamanho e a posição
@@ -50,6 +51,9 @@ typedef struct{
     Sound expelliarmus; //som
     Sound harryDied; //som
     Sound expectro; //feitiço patrono
+    Sound imHermione; //voz Hermione
+    Sound imHarry; //voz Harry
+    Sound imRony; //voz Rony
 
     // Música de fundo:
     Music HPthemeSong; //Música tema de Harry Potter
@@ -73,13 +77,29 @@ typedef struct{
     Rectangle recFramePatronum;
     Rectangle recFireplace;
     Texture2D houses;
-    Texture2D podium;
     Rectangle recFrameHouses;
+    Texture2D hermione;
+    Rectangle recFrameHermione;
+    Texture2D harry;
+    Rectangle recFrameHarry;
+    Texture2D rony;
+    Rectangle recFrameRony;
+    Texture2D neville;
+    Rectangle recFrameNeville;
+    Texture2D podium;
     Texture2D letter;
     Texture2D gryffindor;
     Texture2D ravenclaw;
     Texture2D slytherin;
     Texture2D hufflepuff;
+    Texture2D sortingHat;
+    Texture2D owl;
+    Rectangle recFrameOwl;
+    Rectangle recFrameHat;
+    Texture2D envelope;
+    Texture2D express;
+    Music hat_song;
+    Sound nextPhase;
 }SRC;
 
 
