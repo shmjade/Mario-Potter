@@ -54,6 +54,8 @@ typedef struct{
     Sound imHermione; //voz Hermione
     Sound imHarry; //voz Harry
     Sound imRony; //voz Rony
+    Sound imNeville; //dizendo Neville
+    Sound mischief; //dizendo Neville
 
     // Música de fundo:
     Music HPthemeSong; //Música tema de Harry Potter
@@ -70,6 +72,8 @@ typedef struct{
     Texture2D fireplace;  //cano/retorno
     Texture2D fireplaceGreen;  //cano/retorno
     Texture2D enemies;  //inimigos
+    Texture2D who;
+    Rectangle recFrameWho;
     Texture2D broom;  //inimigos
     Rectangle recFrameEnemies;
     Texture2D ground;     //chão
@@ -98,6 +102,7 @@ typedef struct{
     Rectangle recFrameHat;
     Texture2D envelope;
     Texture2D express;
+    Texture2D marauders;
     Music hat_song;
     Sound nextPhase;
 }SRC;

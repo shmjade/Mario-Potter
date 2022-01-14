@@ -26,8 +26,6 @@
             for(i=0; i<phase.numTubes; i++){
                 DrawTexture(media.fireplace, phase.returns[i].x, phase.returns[i].y, WHITE);
                 DrawTexture(media.fireplace, phase.tubes[i].x, phase.tubes[i].y, WHITE);
-                //draw_fireplace(phase.plats[i].rec, phase, media);
-                //draw_fireplace(phase.returns[i], phase, media);
             }
             EndDrawing();
     }
@@ -39,12 +37,12 @@
         Vector2 position={hero.rec.x, hero.rec.y};
         sprite=media.enemies;
         Rectangle frameRec = media.recFrameEnemies;
-        int initialFrame=6;
+        int initialFrame=3*hero.who;
         frameRec.x = (float)currentFrame*(float)sprite.width/12*6;
-
+        //currentFrame=initialFrame;
         if(hero.afterDeath){
             frameRec.y = (float)sprite.height/8*4;
-            frameRec.x = (float)sprite.width/12*7;
+            frameRec.x = (float)sprite.width/12*(3*hero.who+1);
             DrawText("Press SPACE to release", 510, 80, 15, BLACK);
         }else{
             //Ajustando a direção:
@@ -216,12 +214,15 @@
 
 #define SIZE 17
 int time_win=0;
+float f=1;
 void win_game(SRC media){
     int time_text=1, i=0;
     char text[SIZE] = "M\0ISCHIEF MANAGED";
-    while(time_win<60*10){
+    PlaySound(media.mischief);
+    while(time_win<60*5){
         time_win++;
         i++;
+        f-=0.005;
         if(i==7 && time_text<SIZE-1){
             text[time_text] = text[time_text+1];
             text[time_text+1] = '\0';
@@ -231,6 +232,7 @@ void win_game(SRC media){
         BeginDrawing();
         ClearBackground(GOLD);
         DrawText(text, (SCREEN_WIDTH-MeasureText(text, 50))/2, 300, 50, BLACK);
+        DrawTexture(media.marauders, 0, 0, Fade(WHITE, f));
         EndDrawing();
     }
 }
@@ -277,23 +279,24 @@ int two_answers(SRC media, char question[maxString], char opt1[maxString], char 
 }
 
 int time_letter=0;
+float i=0;
 void letter(SRC media){
     while(time_letter<60*5){ //esperar 10 segundos
         UpdateMusicStream(media.HPthemeSong);
         time_letter++;
+        i+=0.01;
         BeginDrawing();
         ClearBackground(BLACK);
-        DrawTexture(media.letter,(SCREEN_WIDTH-569)/2, 0, WHITE);
+        DrawTexture(media.letter,(SCREEN_WIDTH-569)/2, 0, Fade(WHITE, i));
         EndDrawing();
     }
 }
 
 
 int active=0, collected=0;
-void catch_letter(SRC media){
+void catch_letter(HERO hero, SRC media){
     Vector2 pos_owl = {SCREEN_WIDTH, 15};
     Rectangle rec_letter = {-10, -10, media.envelope.width, media.envelope.height};
-    HERO hero;
     hero.rec = (Rectangle) {600, SCREEN_HEIGHT-GROUND_HEIGHT, media.recFrameEnemies.width, media.recFrameEnemies.height};
     hero.afterDeath = 0;
     hero.direction=1;
@@ -533,149 +536,4 @@ void next_phase(SRC media){
     }
     time_next=0;
 }
-
-
-/*
-int house_choice(SRC media){
-    Vector2 coordTitle = (Vector2){140,45}; //Coordenada do título
-
-    //Inicialização
-    SetMusicVolume(media->HPthemeSong, 1.0); //Escolhendo o volume da música
-    PlayMusicStream(media->HPthemeSong); //Tocando a música tema
-
-    Vector2 posFront = {900, 400};
-    Vector2 posFrontHP = {200, 400};
-    Vector2 posDraco = { -100, 637};
-    Vector2 position = { 0, 637.0f };
-    Rectangle frameRec = { 0.0f, 0.0f, (float)media->harryRight.width/6, (float)media->harryRight.height };
-    Rectangle frameDraco = { 0.0f, 0.0f, (float)media->dracoRight.width/3, (float)media->dracoRight.height };
-    Rectangle frameFront = { 0.0f, 0.0f, (float)media->dracoFront.width/3, (float)media->dracoFront.height };
-    Rectangle frameFrontHP = { 0.0f, 0.0f, (float)media->harryFront.width/5, (float)media->harryFront.height };
-    int currentFrame = 0;
-    int framesCounter = 0;
-    int framesSpeed = 4;
-
-    //Definições:
-    SetTargetFPS(60); //Velocidade de reprodução do jogo (frames per second)
-    char messages[MENU_OPTIONS][20]={ //Mensagens
-        "New game",
-        "Continue game",
-        "Load map",
-        "Ranking",
-        "Help",
-        "About us",
-        "Exit"
-    };
-    int posx[MENU_OPTIONS]; //coordenada x da mensagem
-    int posy[MENU_OPTIONS]; //coordenada y da mensagem
-    int selected=0; //posição do jogador (inicia na primeira opção)
-    int i; //contador
-    const int fontSize = 30; //tamanho da fonte
-    Color color;
-    const Color colorSelected = RED; //cor do item selecionado
-    const Color colorDefault = BLACK; //cor dos demais itens
-
-    //Mensagem centralizada no eixo x
-    posx[0]=535; //New game
-    posx[1]=495; //Continue game
-    posx[2]=537; //Load map
-    posx[3]=546; //Ranking
-    posx[4]=570; //Help
-    posx[5]=536; //About us
-    posx[6]=570; //Exit
-
-    //Mensagem espaçada no eixo y:
-    posy[0]=300; //tamanho definido arbitrariamente
-    for(i=1; i<MENU_OPTIONS; i++){
-        posy[i]=posy[i-1]+fontSize+10; //distância de 10 entre as mensagens
-    }
-
-    //Loop principal (da tecla ENTER):
-    do{ //Enquanto não apertar enter
-        UpdateMusicStream(media->HPthemeSong);
-        //Atualizações:
-        if(IsKeyPressed(KEY_UP)){ //Se apertar tecla para cima
-            if(selected==0)    //Se for o primeiro da lista, ir para o último
-                selected = MENU_OPTIONS-1;
-            else
-                selected--;    //Senão for o primeiro da lista, diminuir o índice (subir uma posição)
-            PlaySound(media->fast_spell);
-        }else if(IsKeyPressed(KEY_DOWN)){ //Se apertar tecla para baixo
-            if(selected==MENU_OPTIONS-1) //Se for o último da lista, ir para o primeiro
-                selected = 0;
-            else
-                selected++;    //Senão for o último da lista, aumentar o índice (descer uma posição)
-            PlaySound(media->fast_spell);
-        }
-        if(position.x>SCREEN_WIDTH)
-            position.x=0;
-        else
-            position.x+=3;
-        if(posDraco.x>SCREEN_WIDTH)
-            posDraco.x=0;
-        else
-            posDraco.x+=3;
-        framesCounter++;
-        if (framesCounter >= (60/framesSpeed)){
-            framesCounter = 0;
-            currentFrame++;
-
-            if(currentFrame >4)
-                currentFrame = 0;
-
-            frameRec.x = (float)currentFrame*(float)media->harryRight.width/6;
-            frameDraco.x = (float)currentFrame*(float)media->dracoRight.width/3;
-            frameFront.x = (float)currentFrame*(float)media->dracoFront.width/3;
-            frameFrontHP.x = (float)currentFrame*(float)media->harryFront.width/4;
-        }
-
-
-        //Desenhos:
-        BeginDrawing();
-        ClearBackground(SKYBLUE);
-        DrawTextEx(media->fonteHP, "MARIO POTTER", coordTitle, 150, 5, BLACK);
-        for(i=0; i<MENU_OPTIONS; i++){
-            if(i==selected){
-                color=colorSelected;
-            }else{
-                color=colorDefault;
-            }
-            DrawText(messages[i], posx[i], posy[i], fontSize, color);
-        }
-        if(time(NULL)%2)
-            DrawText("Press ENTER to select", 400, 240, 35, BLACK);
-
-        DrawTextureRec(media->harryRight, frameRec, position, WHITE);  // Draw part of the texture
-        DrawTextureRec(media->dracoRight, frameDraco, posDraco, WHITE);
-        DrawTextureRec(media->dracoFront, frameFront, posFront, WHITE);
-        DrawTextureRec(media->harryFront, frameFrontHP, posFrontHP, WHITE);
-        EndDrawing();
-    }while(!IsKeyDown(KEY_ENTER));
-    delay(20);
-    PlaySound(media->heavy_spell);
-    return selected;
-}
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

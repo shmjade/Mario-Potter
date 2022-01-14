@@ -14,6 +14,6 @@ void letter(SRC media);
 void hat(SRC media);
 void draw_hat(SRC media);
 void draw_owl(Vector2 pos_owl, SRC media);
-void catch_letter(SRC media);
+void catch_letter(HERO hero, SRC media);
 void next_phase(SRC media);
 #endif // _DRAW_FUNCTIONS_H_

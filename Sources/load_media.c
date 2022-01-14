@@ -141,9 +141,11 @@ void load_media(SRC *media){
     media->fast_spell = LoadSound("Audio/fastSpell.wav");
     media->heavy_spell = LoadSound("Audio/heavySpell.wav");
     media->expelliarmus = LoadSound("Audio/expelliarmus.wav");
+    media->mischief = LoadSound("Audio/mischief.mp3");
     media->imHarry = LoadSound("Audio/voiceHarry.mp3");
     media->imHermione = LoadSound("Audio/voiceHermione.mp3");
     media->imRony = LoadSound("Audio/voiceRony.mp3");
+    media->imNeville = LoadSound("Audio/voiceNeville.mp3");
     media->nextPhase = LoadSound("Audio/next_phase.wav");
     media->expectro = LoadSound("Audio/patronum.wav");
     media->harryDied = LoadSound("Audio/harryDied.wav");
@@ -173,6 +175,11 @@ void load_media(SRC *media){
     media->recFrameHouses.height = (float)media->houses.height/2;
     media->recFrameHouses.x = (float)media->houses.width/2;
     media->recFrameHouses.y = (float)media->houses.height/2;
+    media->who = LoadTexture("Images/who.png");
+    media->recFrameWho.width = (float)media->who.width/12;
+    media->recFrameWho.height = (float)media->who.height/8;
+    media->recFrameWho.x = (float)media->who.width/12;
+    media->recFrameWho.y = (float)media->who.height/8;
     media->sortingHat = LoadTexture("Images/sorting_hat.png");
     media->recFrameHat.width = (float)media->sortingHat.width/4;
     media->recFrameHat.height = (float)media->sortingHat.height;
@@ -192,6 +199,7 @@ void load_media(SRC *media){
     media->envelope = LoadTexture("Images/envelope.png");
     media->express = LoadTexture("Images/hogwarts_express.png");
     media->harry = LoadTexture("Images/hogwarts_express.png");
+    media->marauders = LoadTexture("Images/marauders.png");
 }
 
 
