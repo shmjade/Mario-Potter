@@ -1,2 +1,2 @@
 # Mario-Potter
-Version of Mario Bros with Harry Potter characters
+Version of Mario Dos with Harry Potter characters
