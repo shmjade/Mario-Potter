@@ -2,6 +2,7 @@
 
 int main(){
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "MARIO POTTER");
+    SetExitKey(0); //ESC handled per-screen as a "back to exit confirmation" key
     SetTargetFPS(60);
     InitAudioDevice();
     SRC media;

@@ -1,39 +1,49 @@
 #include "../Headers/menu_functions.h"
 #include "../Headers/all_headers.h"
 
+void prompt_exit_dialog(SRC media){
+    int flagEnd = 0;
+    after_all(&media, &flagEnd);
+    if(flagEnd){
+        CloseAudioDevice();
+        CloseWindow();
+        exit(0);
+    }
+}
+
 void after_all(SRC *media, int *flagEnd){
     fflush(stdin);
-    Vector2 coordTitle = (Vector2){150,75}; //Coordenada do título
+    Vector2 coordTitle = (Vector2){150,75}; //Coordenada do t?tulo
     int timeCounter=0;
 
-    //Tocar música de fundo:
+    //Tocar m?sica de fundo:
     SetMusicVolume(media->afterAllthisTime, 1.0);
     PlayMusicStream(media->afterAllthisTime);
 
-    //Retângulo Yes:
-    Vector2 recYes = {380, 380}; //Coordenadas do retângulo Yes
-    Color colorYes = RED; //Começa vermelho
-    //Retângulo No:
-    Vector2 recNo = {630, 380}; //Coordenadas do retângulo No
-    Color colorNo = RAYWHITE; //Começa branco
+    //Ret?ngulo Yes:
+    Vector2 recYes = {380, 380}; //Coordenadas do ret?ngulo Yes
+    Color colorYes = RED; //Come?a vermelho
+    //Ret?ngulo No:
+    Vector2 recNo = {630, 380}; //Coordenadas do ret?ngulo No
+    Color colorNo = RAYWHITE; //Come?a branco
 
 
-    int input=0; //Escolha do usuário, é o que a função retorna
+    int input=0; //Escolha do usu?rio, ? o que a fun??o retorna
 
     //Loop principal (da tecla ENTER):
-    while(!IsKeyDown(KEY_SPACE)){ //Enquanto não apertar ENTER
+    while(!IsKeyPressed(KEY_ENTER)){ //Enquanto n?o apertar ENTER
         UpdateMusicStream(media->afterAllthisTime);
         timeCounter++;
-        //Atualizações:
+        //Atualiza??es:
         if(IsKeyDown(KEY_LEFT)){
             colorYes = MAROON;
             colorNo = RAYWHITE;
-            input = 0; //Se input for 0, a resposta é "Yes"
+            input = 0; //Se input for 0, a resposta ? "Yes"
             PlaySound(media->fast_spell);
         }else if(IsKeyDown(KEY_RIGHT)){
             colorYes = RAYWHITE;
             colorNo = MAROON;
-            input = 1; //Se input for 1, a resposta é "No"
+            input = 1; //Se input for 1, a resposta ? "No"
             PlaySound(media->fast_spell);
         }
 
@@ -43,12 +53,12 @@ void after_all(SRC *media, int *flagEnd){
         DrawTextEx(media->fonteHP, "MARIO POTTER", coordTitle, 150, 5, BLACK);
         DrawText("AFTER ALL THIS TIME?", 300, 310, 50, BLACK);
         if(timeCounter%5)
-            DrawText("Press SPACE to select", 410, 470, 30, GRAY);
-        //Retângulo Yes:
+            DrawText("Press ENTER to select", 410, 470, 30, GRAY);
+        //Ret?ngulo Yes:
         DrawRectangle(recYes.x, recYes.y, 180, 60, colorYes);
         DrawText("ALWAYS", 410, recYes.y+17, 30, BLACK);
         DrawRectangleLines(recYes.x, recYes.y, 180, 60, BLACK);
-        //Retângulo No:
+        //Ret?ngulo No:
         DrawRectangle(recNo.x, recNo.y, 180, 60, colorNo);
         DrawText("EXIT", 685, recNo.y+17, 30, BLACK);
         DrawRectangleLines(recNo.x, recNo.y, 180, 60, BLACK);
@@ -62,11 +72,11 @@ void after_all(SRC *media, int *flagEnd){
 
 /*
 int menu(SRC *media){
-    Vector2 coordTitle = (Vector2){140,45}; //Coordenada do título
+    Vector2 coordTitle = (Vector2){140,45}; //Coordenada do t?tulo
 
-    //Inicialização
-    SetMusicVolume(media->HPthemeSong, 1.0); //Escolhendo o volume da música
-    PlayMusicStream(media->HPthemeSong); //Tocando a música tema
+    //Inicializa??o
+    SetMusicVolume(media->HPthemeSong, 1.0); //Escolhendo o volume da m?sica
+    PlayMusicStream(media->HPthemeSong); //Tocando a m?sica tema
 
     Vector2 posFront = {900, 400};
     Vector2 posFrontHP = {200, 400};
@@ -80,8 +90,8 @@ int menu(SRC *media){
     int framesCounter = 0;
     int framesSpeed = 4;
 
-    //Definições:
-    SetTargetFPS(60); //Velocidade de reprodução do jogo (frames per second)
+    //Defini??es:
+    SetTargetFPS(60); //Velocidade de reprodu??o do jogo (frames per second)
     char messages[MENU_OPTIONS][20]={ //Mensagens
         "New game",
         "Continue game",
@@ -93,7 +103,7 @@ int menu(SRC *media){
     };
     int posx[MENU_OPTIONS]; //coordenada x da mensagem
     int posy[MENU_OPTIONS]; //coordenada y da mensagem
-    int selected=0; //posição do jogador (inicia na primeira opção)
+    int selected=0; //posi??o do jogador (inicia na primeira op??o)
     int i; //contador
     const int fontSize = 30; //tamanho da fonte
     Color color;
@@ -109,27 +119,27 @@ int menu(SRC *media){
     posx[5]=536; //About us
     posx[6]=570; //Exit
 
-    //Mensagem espaçada no eixo y:
+    //Mensagem espa?ada no eixo y:
     posy[0]=300; //tamanho definido arbitrariamente
     for(i=1; i<MENU_OPTIONS; i++){
-        posy[i]=posy[i-1]+fontSize+10; //distância de 10 entre as mensagens
+        posy[i]=posy[i-1]+fontSize+10; //dist?ncia de 10 entre as mensagens
     }
 
     //Loop principal (da tecla ENTER):
-    do{ //Enquanto não apertar enter
+    do{ //Enquanto n?o apertar enter
         UpdateMusicStream(media->HPthemeSong);
-        //Atualizações:
+        //Atualiza??es:
         if(IsKeyPressed(KEY_UP)){ //Se apertar tecla para cima
-            if(selected==0)    //Se for o primeiro da lista, ir para o último
+            if(selected==0)    //Se for o primeiro da lista, ir para o ?ltimo
                 selected = MENU_OPTIONS-1;
             else
-                selected--;    //Senão for o primeiro da lista, diminuir o índice (subir uma posição)
+                selected--;    //Sen?o for o primeiro da lista, diminuir o ?ndice (subir uma posi??o)
             PlaySound(media->fast_spell);
         }else if(IsKeyPressed(KEY_DOWN)){ //Se apertar tecla para baixo
-            if(selected==MENU_OPTIONS-1) //Se for o último da lista, ir para o primeiro
+            if(selected==MENU_OPTIONS-1) //Se for o ?ltimo da lista, ir para o primeiro
                 selected = 0;
             else
-                selected++;    //Senão for o último da lista, aumentar o índice (descer uma posição)
+                selected++;    //Sen?o for o ?ltimo da lista, aumentar o ?ndice (descer uma posi??o)
             PlaySound(media->fast_spell);
         }
         if(position.x>SCREEN_WIDTH)
@@ -183,28 +193,26 @@ int menu(SRC *media){
 */
 
 int menu(SRC media){
-    Vector2 coordTitle = (Vector2){140,45}; //Coordenada do título
+    Vector2 coordTitle = (Vector2){140,45}; //Coordenada do t?tulo
 
-    //Inicialização
-    SetMusicVolume(media.HPthemeSong, 1.0); //Escolhendo o volume da música
-    PlayMusicStream(media.HPthemeSong); //Tocando a música tema
+    //Inicializa??o
+    SetMusicVolume(media.HPthemeSong, 1.0); //Escolhendo o volume da m?sica
+    PlayMusicStream(media.HPthemeSong); //Tocando a m?sica tema
 
     Vector2 posFront = {900, 400};
     Vector2 posFrontHP = {200, 400};
     Vector2 posDraco = {-100, 637};
     Vector2 posHarry = {100, 637};
-    Vector2 position = {0, 637.0f};
-    Rectangle frameRec = (Rectangle) media.recFrameEnemies;
-    Rectangle frameDraco = (Rectangle) media.recFrameEnemies;
-    Rectangle frameHarry = (Rectangle) media.recFrameEnemies;
+    Rectangle frameDraco = { 0.0f, 0.0f, (float)media.dracoRight.width/3, (float)media.dracoRight.height };
+    Rectangle frameHarry = { 0.0f, 0.0f, (float)media.harryRight.width/6, (float)media.harryRight.height };
     Rectangle frameFront = { 0.0f, 0.0f, (float)media.dracoFront.width/3, (float)media.dracoFront.height };
-    Rectangle frameFrontHP = { 0.0f, 0.0f, (float)media.harryFront.width/5, (float)media.harryFront.height };
-    int currentFrame = 0, currentFrameD=3, currentFrameH=6;
+    Rectangle frameFrontHP = { 0.0f, 0.0f, (float)media.harryFront.width/4, (float)media.harryFront.height };
+    int currentFrame = 0, currentFrameD = 0, currentFrameH = 0;
     int framesCounter = 0;
     int framesSpeed = 6;
 
-    //Definições:
-    SetTargetFPS(60); //Velocidade de reprodução do jogo (frames per second)
+    //Defini??es:
+    SetTargetFPS(60); //Velocidade de reprodu??o do jogo (frames per second)
     char messages[MENU_OPTIONS][20]={ //Mensagens
         "New game",
         "Continue game",
@@ -216,7 +224,7 @@ int menu(SRC media){
     };
     int posx[MENU_OPTIONS]; //coordenada x da mensagem
     int posy[MENU_OPTIONS]; //coordenada y da mensagem
-    int selected=0; //posição do jogador (inicia na primeira opção)
+    int selected=0; //posi??o do jogador (inicia na primeira op??o)
     int i; //contador
     const int fontSize = 30; //tamanho da fonte
     Color color;
@@ -232,33 +240,31 @@ int menu(SRC media){
     posx[5]=536; //About us
     posx[6]=570; //Exit
 
-    //Mensagem espaçada no eixo y:
+    //Mensagem espa?ada no eixo y:
     posy[0]=300; //tamanho definido arbitrariamente
     for(i=1; i<MENU_OPTIONS; i++){
-        posy[i]=posy[i-1]+fontSize+10; //distância de 10 entre as mensagens
+        posy[i]=posy[i-1]+fontSize+10; //dist?ncia de 10 entre as mensagens
     }
 
     //Loop principal (da tecla ENTER):
-    do{ //Enquanto não apertar enter
+    do{ //Enquanto n?o apertar enter
         UpdateMusicStream(media.HPthemeSong);
-        //Atualizações:
+        //ESC: mostrar tela de sa?da
+        if(IsKeyPressed(KEY_ESCAPE)) prompt_exit_dialog(media);
+        //Atualiza??es:
         if(IsKeyPressed(KEY_UP)){ //Se apertar tecla para cima
-            if(selected==0)    //Se for o primeiro da lista, ir para o último
+            if(selected==0)    //Se for o primeiro da lista, ir para o ?ltimo
                 selected = MENU_OPTIONS-1;
             else
-                selected--;    //Senão for o primeiro da lista, diminuir o índice (subir uma posição)
+                selected--;    //Sen?o for o primeiro da lista, diminuir o ?ndice (subir uma posi??o)
             PlaySound(media.fast_spell);
         }else if(IsKeyPressed(KEY_DOWN)){ //Se apertar tecla para baixo
-            if(selected==MENU_OPTIONS-1) //Se for o último da lista, ir para o primeiro
+            if(selected==MENU_OPTIONS-1) //Se for o ?ltimo da lista, ir para o primeiro
                 selected = 0;
             else
-                selected++;    //Senão for o último da lista, aumentar o índice (descer uma posição)
+                selected++;    //Sen?o for o ?ltimo da lista, aumentar o ?ndice (descer uma posi??o)
             PlaySound(media.fast_spell);
         }
-        if(position.x>SCREEN_WIDTH)
-            position.x=0;
-        else
-            position.x+=3;
         if(posDraco.x>SCREEN_WIDTH)
             posDraco.x=0;
         else
@@ -276,17 +282,13 @@ int menu(SRC media){
         }
         if(currentFrame>2)
             currentFrame = 0;
-        if(currentFrameD>5)
-            currentFrameD = 3;
-        if(currentFrameH>8)
-            currentFrameH = 6;
+        if(currentFrameD>2)
+            currentFrameD = 0;
+        if(currentFrameH>5)
+            currentFrameH = 0;
 
-        frameRec.x = (float)currentFrame*(float)media.recFrameEnemies.x;
-        frameRec.y = (float)media.recFrameEnemies.y*2;
-        frameDraco.x = (float)currentFrameD*(float)media.recFrameEnemies.x;
-        frameDraco.y = (float)media.recFrameEnemies.y*2;
-        frameHarry.x = (float)currentFrameH*(float)media.recFrameEnemies.x;
-        frameHarry.y = (float)media.recFrameEnemies.y*6;
+        frameDraco.x = (float)currentFrameD*(float)media.dracoRight.width/3;
+        frameHarry.x = (float)currentFrameH*(float)media.harryRight.width/6;
         frameFront.x = (float)currentFrame*(float)media.dracoFront.width/3;
         frameFrontHP.x = (float)currentFrame*(float)media.harryFront.width/4;
 
@@ -305,9 +307,8 @@ int menu(SRC media){
         if(time(NULL)%2)
             DrawText("Press ENTER to select", 400, 240, 35, BLACK);
 
-        DrawTextureRec(media.enemies, frameRec, position, WHITE);  // Draw part of the texture
-        DrawTextureRec(media.enemies, frameDraco, posDraco, WHITE);
-        DrawTextureRec(media.enemies, frameHarry, posHarry, WHITE);
+        DrawTextureRec(media.dracoRight, frameDraco, posDraco, WHITE);
+        DrawTextureRec(media.harryRight, frameHarry, posHarry, WHITE);
         DrawTextureRec(media.dracoFront, frameFront, posFront, WHITE);
         DrawTextureRec(media.harryFront, frameFrontHP, posFrontHP, WHITE);
         EndDrawing();
@@ -336,7 +337,7 @@ void about_us(SRC *media){
     Music audio = media->aboutUs;
     int i;
     char title[10]="ABOUT";
-    char goBack[30]="Press SPACE to return";
+    char goBack[30]="Press ENTER to return";
     posTitle.x=align_text_x(title, media->fonteHP, 80);
     posTitle.y=200;
     posBack.x=align_text_x(goBack, media->fonteHP, 40);
@@ -362,12 +363,13 @@ void about_us(SRC *media){
     for(i=1; i<LINES; i++)
         pos[i].y=pos[i-1].y+45;
 
-    PlayMusicStream(audio); //Tocando a música tema
-    SetMusicVolume(audio, 1.0); //Escolhendo o volume da música
+    PlayMusicStream(audio); //Tocando a m?sica tema
+    SetMusicVolume(audio, 1.0); //Escolhendo o volume da m?sica
 
-    while(!IsKeyDown(KEY_SPACE)){
+    while(!IsKeyPressed(KEY_ENTER) && !IsKeyPressed(KEY_M)){
         timeCounter++;
         UpdateMusicStream(audio);
+        if(IsKeyPressed(KEY_ESCAPE)) prompt_exit_dialog(*media);
         if(posTitle.y < -delay) posTitle.y=SCREEN_HEIGHT+delay;
             posTitle.y--;
         for(i=0; i<LINES; i++){

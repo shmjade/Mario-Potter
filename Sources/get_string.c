@@ -2,7 +2,7 @@
 #define MAX_NAME 20
 #include <time.h>
 
-///--------------Interface que pega uma string digitada pelo usuário e retorna para uma string de destino
+///--------------Interface que pega uma string digitada pelo usuï¿½rio e retorna para uma string de destino
 void get_string(char titleWindow[30], char answer[], SRC media){
     const float fontSize = 100;
     float posx = (SCREEN_WIDTH-(MeasureTextEx(media.fonteHP, titleWindow, fontSize, 0).x))/2;
@@ -40,10 +40,10 @@ void get_string(char titleWindow[30], char answer[], SRC media){
         DrawText(TextFormat("INPUT CHARS: %i/%i", letterCount, MAX_NAME), 450, 400, 30, GRAY);
         if(timeCounter%5){
             DrawText("Press BACKSPACE to delete", 380, 460, 30, GRAY);
-            DrawText("Press SPACE when done", 410, 500, 30, RED);
+            DrawText("Press ENTER when done", 410, 500, 30, RED);
         }
         EndDrawing();
-    }while(!IsKeyPressed(KEY_SPACE));
+    }while(!IsKeyPressed(KEY_ENTER));
     strcpy(answer, name);
     PlaySound(media.heavy_spell);
 }

@@ -3,7 +3,7 @@
 
 ///----------Jogar um novo jogo---------
 void play_new_game(SRC media){
-    //Inicializações:
+    //Inicializaï¿½ï¿½es:
     GAME newGame;
     int level=0;
     PHASE journey[JOURNEY_SIZE];
@@ -23,6 +23,7 @@ void play_new_game(SRC media){
         newGame.phase.level=level+1;
         printf("fase: %d", newGame.phase.level);
         flag_next=play_phase(&newGame.phase, media, &flag_save, newGame.namePlayer);
+        if(flag_next == -1) return; //M pressed: back to menu, skip ranking
         if(flag_next){
             PlaySound(media.nextPhase);
             next_phase(media);
@@ -46,9 +47,13 @@ int play_phase(PHASE *phase, SRC media, int *flag_save, char namePlayer[]){
     PlayMusicStream(media.HPthemeSong);
     while(!flag_die && !flag_win){
         UpdateMusicStream(media.HPthemeSong);
+        //Pressionar M: voltar ao menu principal
+        if(IsKeyPressed(KEY_M)) return -1;
+        //Pressionar ESC: tela de sa?da
+        if(IsKeyPressed(KEY_ESCAPE)) prompt_exit_dialog(media);
         //Se pressionar A, salvar o jogo:
         if(IsKeyPressed(KEY_A)) save_phase(*phase, namePlayer);
-        if(phase->hero.afterDeath && IsKeyPressed(KEY_SPACE))
+        if(phase->hero.afterDeath && IsKeyPressed(KEY_ENTER))
             phase->hero.afterDeath=0;
         if(phase->hero.afterDeath != 1)
             move_hero(phase, media);
@@ -90,7 +95,7 @@ int play_phase(PHASE *phase, SRC media, int *flag_save, char namePlayer[]){
         if(phase->hero.lives==0) flag_die=1;
         if(phase->deadEnemies == phase->numEnem1 + phase->numEnem2) flag_win=1;
     }
-    return flag_win; //se venceu, retorna 1, senão, retorna 0
+    return flag_win; //se venceu, retorna 1, senï¿½o, retorna 0
     printf("Flag win da play phase: %d", flag_win);
 }
 
@@ -99,14 +104,14 @@ int play_phase(PHASE *phase, SRC media, int *flag_save, char namePlayer[]){
 //Pega os dados da fase anterior e transfere para esta:
 void update_phase(GAME *game, PHASE journey[]){
     journey[game->phase.level].hero.points += game->phase.hero.points; //soma os pontos conquistados na fase anterior com os da nova (0)
-    journey[game->phase.level].hero.lives = game->phase.hero.lives; //mantém a quantidade de vidas do final da fase anterior
-    journey[game->phase.level].powerHits = game->phase.powerHits; //mantém a quantidade de vezes que pode usar o botão Power
+    journey[game->phase.level].hero.lives = game->phase.hero.lives; //mantï¿½m a quantidade de vidas do final da fase anterior
+    journey[game->phase.level].powerHits = game->phase.powerHits; //mantï¿½m a quantidade de vezes que pode usar o botï¿½o Power
 }
 
 /*
-///---------------Salva o jogo em um arquivo binário-------------
+///---------------Salva o jogo em um arquivo binï¿½rio-------------
 int save_game(GAME *game){
-    FILE *arq; //declaração de um ponteiro para arquivo
+    FILE *arq; //declaraï¿½ï¿½o de um ponteiro para arquivo
     int success=1;
 
     if(!(arq = fopen(game->namePlayer,"wb"))){ // abre para escrita e testa a abertura
@@ -126,16 +131,16 @@ int save_game(GAME *game){
 }
 */
 /*
-///--------------Carrega o jogo de um arquivo binário------------
+///--------------Carrega o jogo de um arquivo binï¿½rio------------
 GAME* load_game(char *nameArq){
     printf("Tentaremos abrir o arquivo");
-    GAME *loaded = (GAME*) malloc(sizeof(GAME)); //cast para o ponteiro de jogo (não estava alocado na memória antes)
+    GAME *loaded = (GAME*) malloc(sizeof(GAME)); //cast para o ponteiro de jogo (nï¿½o estava alocado na memï¿½ria antes)
     FILE *arq;
     if(!(arq = fopen(nameArq, "rb"))){ //sinaliza se houve erro na abertura do arquivo
         printf("Erro na abertura do arquivo\n");
     }else{
         printf("\tJogo aberto: \n");
-    //    while(!feof(arq)){//Enquanto não tiver chegado ao final do arquivo
+    //    while(!feof(arq)){//Enquanto nï¿½o tiver chegado ao final do arquivo
             if(fread(loaded, sizeof(GAME), 1, arq)==1){
                 printf("Nome do jogador: %s\n", loaded->namePlayer);
                 printf("Fase: %d\n", loaded->phase.level);
@@ -155,85 +160,85 @@ GAME* load_game(char *nameArq){
 ///----------------Carrega o jogo  de um arquivo txt----------------
 
 ///-----------------Salva o jogo em um arquivo txt------------------
-/*Para jogar um jogo antigo, precisamos salvá-lo de forma adequada,
-armazenando todas as informações necessárias, conforme:
-- NOME DO JOGADOR: será o identificador para abrir o nosso jogo antigo
-- FASE DO JOGO: guardará as informações do jogo em si, contendo:
-    - o nível da fase (level) para continuar a campanha;
-    - As informações sobre o botão power:
-        - Sua posição na tela, altura e largura (recPower);
-        - Quantas vezes ele ainda pode ser usado (no máximo 3 ao longo do jogo);
-    - As informações sobre o herói/jogador (HERO):
+/*Para jogar um jogo antigo, precisamos salvï¿½-lo de forma adequada,
+armazenando todas as informaï¿½ï¿½es necessï¿½rias, conforme:
+- NOME DO JOGADOR: serï¿½ o identificador para abrir o nosso jogo antigo
+- FASE DO JOGO: guardarï¿½ as informaï¿½ï¿½es do jogo em si, contendo:
+    - o nï¿½vel da fase (level) para continuar a campanha;
+    - As informaï¿½ï¿½es sobre o botï¿½o power:
+        - Sua posiï¿½ï¿½o na tela, altura e largura (recPower);
+        - Quantas vezes ele ainda pode ser usado (no mï¿½ximo 3 ao longo do jogo);
+    - As informaï¿½ï¿½es sobre o herï¿½i/jogador (HERO):
         - sua velocidade horizontal (speedX);
-        - sua direção de deslocamento (direction);
-        - sua posição na tela, sua altura e largura (rec);
-        - se pode pular (jump) - 1 se está em cima do "chão" ou 0 se está
+        - sua direï¿½ï¿½o de deslocamento (direction);
+        - sua posiï¿½ï¿½o na tela, sua altura e largura (rec);
+        - se pode pular (jump) - 1 se estï¿½ em cima do "chï¿½o" ou 0 se estï¿½
           pulando ou caindo;
-        - se está subindo (jumping);
-        - se está caindo (falling);
-        - se está parado (stop);
-        - se pode ir para a direita, ou seja, se não está colidindo com o cenário
-          estático (right);
-        - se pode ir para a esquerda, ou seja, se não está colidindo com o cenário
-          estático (left);
+        - se estï¿½ subindo (jumping);
+        - se estï¿½ caindo (falling);
+        - se estï¿½ parado (stop);
+        - se pode ir para a direita, ou seja, se nï¿½o estï¿½ colidindo com o cenï¿½rio
+          estï¿½tico (right);
+        - se pode ir para a esquerda, ou seja, se nï¿½o estï¿½ colidindo com o cenï¿½rio
+          estï¿½tico (left);
         - a quantidade de vidas (lives);
-        - a pontuação do jogador (points);
-        - se está no período após ter morrido (afterDeath);
-    - As informações sobre os inimigos:
-        - delay na liberação entre os inimigos (delayEnemy);
-        - quantidade de inimigos já derrotados na fase (deadEnemies);
+        - a pontuaï¿½ï¿½o do jogador (points);
+        - se estï¿½ no perï¿½odo apï¿½s ter morrido (afterDeath);
+    - As informaï¿½ï¿½es sobre os inimigos:
+        - delay na liberaï¿½ï¿½o entre os inimigos (delayEnemy);
+        - quantidade de inimigos jï¿½ derrotados na fase (deadEnemies);
         - Tipo 1:
             - quantidade de inimigos do tipo 1 na fase (numEnem1);
-            - quantidade de inimigos do tipo 1 que já foram liberados na fase (activeEnemies1);
+            - quantidade de inimigos do tipo 1 que jï¿½ foram liberados na fase (activeEnemies1);
             - vetor com inimigos do tipo 1, contendo:
-                - se já foi ativado ou não (alive);
+                - se jï¿½ foi ativado ou nï¿½o (alive);
                 - seu tipo (level);
                 - seu status (NORMAL, WEAK, DEAD);
                 - sua velocidade de deslocamento na horizontal (speedX);
-                - sua direção de deslocamento (direction);
-                - seu tamanho e posição na tela (rec);
+                - sua direï¿½ï¿½o de deslocamento (direction);
+                - seu tamanho e posiï¿½ï¿½o na tela (rec);
         - Tipo 2:
             - quantidade de inimigos do tipo 2 na fase (numEnem2);
-            - quantidade de inimigos do tipo 2 que já foram liberados na fase (activeEnemies2);
+            - quantidade de inimigos do tipo 2 que jï¿½ foram liberados na fase (activeEnemies2);
             - vetor com inimigos do tipo 2, contendo:
-                - se já foi ativado ou não (alive);
+                - se jï¿½ foi ativado ou nï¿½o (alive);
                 - seu tipo (level);
                 - seu status (NORMAL, WEAK, DEAD);
                 - sua velocidade de deslocamento na horizontal (speedX);
-                - sua direção de deslocamento (direction);
-                - seu tamanho e posição na tela (rec);
-    - As informações sobre as plataformas:
+                - sua direï¿½ï¿½o de deslocamento (direction);
+                - seu tamanho e posiï¿½ï¿½o na tela (rec);
+    - As informaï¿½ï¿½es sobre as plataformas:
         - quantidade de plataformas na fase (cada p foi considerado uma plataforma);
         - arranjo de plataformas (PLATFORMS), contendo:
-            - sua posição na tela;
+            - sua posiï¿½ï¿½o na tela;
             - sua largura e altura;
-    - As informações sobre os canos/retornos:
+    - As informaï¿½ï¿½es sobre os canos/retornos:
         - quantidade de canos/retornos;
-        - posição de cada cano/retorno;
-    - As informações sobre as moedas:
-        - quantidade de moedas já liberadas na fase;
+        - posiï¿½ï¿½o de cada cano/retorno;
+    - As informaï¿½ï¿½es sobre as moedas:
+        - quantidade de moedas jï¿½ liberadas na fase;
         - arranjo de moedas (COINS) contendo:
-            - seu status (ativa ou inativa) para liberar ou não a movimentação;
+            - seu status (ativa ou inativa) para liberar ou nï¿½o a movimentaï¿½ï¿½o;
             - sua velocidade de deslocamento na horizontal (speedX);
-            - sua direção de deslocamento (direction);
-            - sua posição na tela, sua altura e largura (coinRec).
-Todas essas informações estão armazenadas na nossa struct GAME, portanto, podemos
-simplesmente armazenar as informações de acordo com a nossa struct. Para isso, faremos: */
+            - sua direï¿½ï¿½o de deslocamento (direction);
+            - sua posiï¿½ï¿½o na tela, sua altura e largura (coinRec).
+Todas essas informaï¿½ï¿½es estï¿½o armazenadas na nossa struct GAME, portanto, podemos
+simplesmente armazenar as informaï¿½ï¿½es de acordo com a nossa struct. Para isso, faremos: */
 
 void save_phase(PHASE phase, char namePlayer[]){
-    //Declaração do ponteiro de arquivo:
+    //Declaraï¿½ï¿½o do ponteiro de arquivo:
     FILE *arq;
     printf("\nSave phase\n");
     int i;
 
-    //Abriremos um arquivo com o mesmo nome do jogador para salvar as informações:
+    //Abriremos um arquivo com o mesmo nome do jogador para salvar as informaï¿½ï¿½es:
     if(!(arq = fopen(namePlayer, "w"))) // abre para escrita
         printf("Erro na abertura\n");
     else{
         fprintf(arq,"%d \n", phase.level);
-        ///--------Informações do botão Power---------
+        ///--------Informaï¿½ï¿½es do botï¿½o Power---------
         fprintf(arq,"%d \n", phase.powerHits);
-        ///------------Informações do herói-----------
+        ///------------Informaï¿½ï¿½es do herï¿½i-----------
         fprintf(arq,"%d \n", phase.hero.speedX);
         fprintf(arq,"%d \n", phase.hero.direction);
         fprintf(arq,"%f %f\n", phase.hero.rec.x, phase.hero.rec.y);
@@ -246,7 +251,7 @@ void save_phase(PHASE phase, char namePlayer[]){
         fprintf(arq,"%d \n", phase.hero.lives);
         fprintf(arq,"%d \n", phase.hero.points);
         fprintf(arq,"%d \n", phase.hero.afterDeath);
-        ///----------Informações dos inimigos------------
+        ///----------Informaï¿½ï¿½es dos inimigos------------
         fprintf(arq,"%d \n", phase.activeEnemies1);
         fprintf(arq,"%d \n", phase.activeEnemies2);
         fprintf(arq,"%d \n", phase.deadEnemies);
@@ -283,7 +288,7 @@ void save_phase(PHASE phase, char namePlayer[]){
             fprintf(arq, "%d \n", phase.enemies2[i].speedX);
             fprintf(arq, "%d \n", phase.enemies2[i].status);
         }
-        ///----------Informações sobre as moedas---------
+        ///----------Informaï¿½ï¿½es sobre as moedas---------
         fprintf(arq, "%d \n", phase.numCoins);
         for(i=0; i<phase.numCoins; i++){
             fprintf(arq, "%d \n", phase.coins[i].status);
@@ -300,7 +305,7 @@ void save_phase(PHASE phase, char namePlayer[]){
 PHASE load_old_phase(PHASE staticPhase, char namePlayer[], SRC media){
     PHASE loaded;
     int i;
-    ///----------informações estáticas---------
+    ///----------informaï¿½ï¿½es estï¿½ticas---------
     loaded.numEnem1=staticPhase.numEnem1;
     loaded.numEnem2=staticPhase.numEnem2;
     loaded.delayEnemy=staticPhase.delayEnemy;
@@ -332,8 +337,8 @@ PHASE load_old_phase(PHASE staticPhase, char namePlayer[], SRC media){
     loaded.hero.rec.height = staticPhase.hero.rec.height;
     loaded.hero.rec.width = staticPhase.hero.rec.width;
 
-    ///----------Atualizando informações móveis-------------
-    //Declaração do ponteiro de arquivo:
+    ///----------Atualizando informaï¿½ï¿½es mï¿½veis-------------
+    //Declaraï¿½ï¿½o do ponteiro de arquivo:
     FILE *arq;
     printf("\nLoad game\n");
     ///Abertura do arquivo
@@ -343,7 +348,7 @@ PHASE load_old_phase(PHASE staticPhase, char namePlayer[], SRC media){
     }else{//Abriu corretamente, coletaremos os dados do arquivo da fase a ser carregada:
             printf("Loading");
             fscanf(arq, "%d %d", &loaded.level, &loaded.powerHits);
-            ///---------Informações do heróis--------------
+            ///---------Informaï¿½ï¿½es do herï¿½is--------------
             fscanf(arq, "%d %d", &loaded.hero.speedX, &loaded.hero.direction);
             fscanf(arq, "%f %f", &loaded.hero.rec.x, &loaded.hero.rec.y);
             fscanf(arq, "%d", &loaded.hero.jump);
@@ -356,7 +361,7 @@ PHASE load_old_phase(PHASE staticPhase, char namePlayer[], SRC media){
             fscanf(arq, "%d", &loaded.hero.points);
             fscanf(arq, "%d", &loaded.hero.afterDeath);
 
-            ///---------Informações dos inimigos-----------
+            ///---------Informaï¿½ï¿½es dos inimigos-----------
             fscanf(arq, "%d", &loaded.activeEnemies1);
             fscanf(arq, "%d", &loaded.activeEnemies2);
             fscanf(arq, "%d", &loaded.deadEnemies);
@@ -391,7 +396,7 @@ PHASE load_old_phase(PHASE staticPhase, char namePlayer[], SRC media){
                 fscanf(arq, "%d", &loaded.enemies2[i].status);
             }
 
-            ///------------Informações das moedas--------------
+            ///------------Informaï¿½ï¿½es das moedas--------------
             fscanf(arq, "%d", &loaded.numCoins);
             for(i=0; i<loaded.numCoins; i++){
                 fscanf(arq, "%d", &loaded.coins[i].status);
@@ -449,13 +454,15 @@ void continue_game(SRC media){
     }else
         fscanf(arq, "%d", &level);
     fclose(arq);
-    level--; //Se a fase é 1, será a posição 0 do vetor journey;
+    level--; //Se a fase ï¿½ 1, serï¿½ a posiï¿½ï¿½o 0 do vetor journey;
 
     game.phase = load_old_phase(journey[level], game.namePlayer, media);
 
     do{
     printf("\n------Fase: %d", game.phase.level);
-        if(flag_next = play_phase(&game.phase, media, &flag_save, game.namePlayer))
+        flag_next = play_phase(&game.phase, media, &flag_save, game.namePlayer);
+        if(flag_next == -1) return; //M pressed: back to menu, skip ranking
+        if(flag_next)
             game.phase.level++;
         if(game.phase.level==7)
             flag_win=1;
@@ -473,7 +480,7 @@ void update_ranking(GAME game){
     if(!(arq = fopen("highscores.bin", "rb"))) //sinaliza se houve erro na abertura do arquivo
         printf("Erro na abertura do arquivo\n");
     else
-        fread(&ranking, sizeof(RANKING), 1, arq); //os dados já estão na ordem correta
+        fread(&ranking, sizeof(RANKING), 1, arq); //os dados jï¿½ estï¿½o na ordem correta
     printf("Sly: %d", ranking[0].pointsSly);
     if(game.phase.hero.points>ranking->points){
         ranking->points = game.phase.hero.points;
@@ -511,7 +518,7 @@ void update_ranking(GAME game){
     }else{
         ///-------------Leitura dos dados--------------
         for(int i=0; i<RANKING_SIZE; i++)
-            fread(&ranking[i], sizeof(RANKING), 1, arq); //os dados já estão na ordem correta
+            fread(&ranking[i], sizeof(RANKING), 1, arq); //os dados jï¿½ estï¿½o na ordem correta
     }
     int position=is_between(ranking, game);
     if(position!=-2 && position !=5){
@@ -529,7 +536,7 @@ void update_ranking(GAME game){
 /*
 int is_between(RANKING ranking[RANKING_SIZE], GAME game){
     int position=-2;
-    if(game.phase.hero.points<ranking[4].points) //Se for menor do que a menor das pontuações do ranking
+    if(game.phase.hero.points<ranking[4].points) //Se for menor do que a menor das pontuaï¿½ï¿½es do ranking
         position=5;
     else{
         if(game.phase.hero.points>ranking[4].points && game.phase.hero.points<ranking[3].points)
@@ -549,14 +556,15 @@ int is_between(RANKING ranking[RANKING_SIZE], GAME game){
 
 
 void ranking_screen(SRC media){
-    RANKING ranking[RANKING_SIZE];
+    RANKING ranking[RANKING_SIZE] = {0};
     FILE *arq;
-    if(!(arq = fopen("highscores.bin", "rb+"))){ //sinaliza se houve erro na abertura do arquivo
+    if(!(arq = fopen("highscores.bin", "rb"))){ //sinaliza se houve erro na abertura do arquivo
         printf("Erro na abertura do arquivo\n");
     }else{
         ///-------------Leitura dos dados--------------
         for(int i=0; i<RANKING_SIZE; i++)
-            fread(&ranking[i], sizeof(RANKING), 1, arq); //os dados já estão na ordem correta
+            fread(&ranking[i], sizeof(RANKING), 1, arq); //os dados jï¿½ estï¿½o na ordem correta
+        fclose(arq);
     }
     int places[4] = {GRYFFINDOR, HUFFLEPUFF, RAVENCLAW, SLYTHERIN};
     int houses[4] = {ranking->pointsGryf, ranking->pointsHuf, ranking->pointsRav, ranking->pointsSly};
@@ -564,7 +572,7 @@ void ranking_screen(SRC media){
     int i, j, aux, temp;
     for(i=0;i<4;i++){
         for(j=i+1;j<4;j++){
-            if(houses[i] >= houses[j]){
+            if(houses[i] <= houses[j]){ //descending: largest first
                 aux=houses[i];
                 temp=places[i];
                 a_img=housesIMG[i];
@@ -583,9 +591,10 @@ void ranking_screen(SRC media){
     position[1] = (Vector2) {320, 310};
     position[2] = (Vector2) {700, 310};
 
-    char champion[] = "Hogwarts champion: ";
-    strcat(champion, ranking->name);
+    char champion[MAX_CHAR_NAME + 32];
+    snprintf(champion, sizeof champion, "Hogwarts champion: %s", ranking->name);
     do{
+        if(IsKeyPressed(KEY_ESCAPE)) prompt_exit_dialog(media);
         BeginDrawing();
         DrawTextEx(media.fonteHP, "House Cup Results", posTitle, 100, 2, WHITE);
         DrawText(champion, (SCREEN_WIDTH-MeasureText(champion, 40))/2, 180, 40, RAYWHITE);
@@ -594,10 +603,11 @@ void ranking_screen(SRC media){
         char temp[10];
         for(i=0; i<3; i++){
             DrawTexture(housesIMG[i], position[i].x, position[i].y, WHITE);
-            DrawText(itoa(houses[i], temp, 10), position[i].x+30, position[i].y-30, 30, WHITE);
+            snprintf(temp, sizeof temp, "%d", houses[i]);
+            DrawText(temp, position[i].x+30, position[i].y-30, 30, WHITE);
         }
         EndDrawing();
-    }while(!IsKeyDown(KEY_ENTER));
+    }while(!IsKeyDown(KEY_ENTER) && !IsKeyPressed(KEY_M));
 }
 
 /*
@@ -609,7 +619,7 @@ void ranking_screen(SRC media){
     }else{
         ///-------------Leitura dos dados--------------
         for(int i=0; i<RANKING_SIZE; i++)
-            fread(&ranking[i], sizeof(RANKING), 1, arq); //os dados já estão na ordem correta
+            fread(&ranking[i], sizeof(RANKING), 1, arq); //os dados jï¿½ estï¿½o na ordem correta
     }
     int places[4] = {GRYFFINDOR, HUFFLEPUFF, RAVENCLAW, SLYTHERIN};
     int houses[4] = {ranking->pointsGryf, ranking->pointsHuf, ranking->pointsRav, ranking->pointsSly};

@@ -65,9 +65,11 @@ PHASE load_phase(char fullTitle[MAX_CHAR_NAME], SRC media){
             }
         }
         col++;
-        if(collect=='\n' || collect=='\r'){
+        if(collect=='\n'){
             col=0;
             lin++;
+        }else if(collect=='\r'){
+            col=0;
         }
     }
     rewind(phase);
@@ -84,7 +86,7 @@ PHASE load_phase(char fullTitle[MAX_CHAR_NAME], SRC media){
             thisPhase.hero.rec.width = media.recFrameEnemies.width;
             thisPhase.hero.rec.height = media.recFrameEnemies.height;
         }
-        ///Procurando o botão Power:
+        ///Procurando o botï¿½o Power:
         if(letter=='b' || letter=='B'){
             thisPhase.recPower.x=col*10;
             thisPhase.recPower.y=lin*25;
@@ -108,13 +110,15 @@ PHASE load_phase(char fullTitle[MAX_CHAR_NAME], SRC media){
             t++;
         }
         col++;
-        if(letter=='\n' || letter=='\r'){
+        if(letter=='\n'){
             col=0;
             lin++;
+        }else if(letter=='\r'){
+            col=0;
         }
     }
 
-    ///--------Leitura da última linha-------
+    ///--------Leitura da ï¿½ltima linha-------
     fscanf(phase, "%d %d %d", &thisPhase.numEnem1, &thisPhase.numEnem2, &thisPhase.delayEnemy);
 
     ///--------Inicializando todos os inimigos de forma inativa----------
@@ -194,9 +198,9 @@ void load_media(SRC *media){
 void load_map(SRC media){
     //Coleta o nome do arquivo a ser aberto:
     char title[MAX_CHAR_NAME];
-    get_string("Type the file's name", title, media); //pega o nome com a interface da função get_name
+    get_string("Type the file's name", title, media); //pega o nome com a interface da funï¿½ï¿½o get_name
     char fullTitle[MAX_CHAR_NAME] = "Phases/";
-    strcat(fullTitle, title); //concatena para colocar a localização correta do arquivo
+    strcat(fullTitle, title); //concatena para colocar a localizaï¿½ï¿½o correta do arquivo
     puts(fullTitle);
     PHASE phase = load_phase(fullTitle, media);
     phase.activeEnemies1=0;

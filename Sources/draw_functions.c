@@ -1,6 +1,6 @@
 #include "../Headers/draw_functions.h"
 
-///----------------------------Funções de desenho-----------------------------
+///----------------------------Funï¿½ï¿½es de desenho-----------------------------
 
 
     ///---------------------------Fase-----------------------------
@@ -32,7 +32,7 @@
             EndDrawing();
     }
 
-    ///---------Herói----------
+    ///---------Herï¿½i----------
     int framesCounter=0, currentFrame=6, framesSpeed=30;
     void draw_hero(HERO hero, SRC media){
         Texture2D sprite;
@@ -45,15 +45,15 @@
         if(hero.afterDeath){
             frameRec.y = (float)sprite.height/8*4;
             frameRec.x = (float)sprite.width/12*7;
-            DrawText("Press SPACE to release", 510, 80, 15, BLACK);
+            DrawText("Press ENTER to release", 510, 80, 15, BLACK);
         }else{
-            //Ajustando a direção:
+            //Ajustando a direï¿½ï¿½o:
             if(hero.direction==1) //Direita
                 frameRec.y = (float)sprite.height/8*6;
             else //Esquerda
                 frameRec.y = (float)sprite.height/8*5;
 
-            //Só se mexe se estiver apertando a tecla
+            //Sï¿½ se mexe se estiver apertando a tecla
             if(IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_RIGHT)){
                 framesCounter++;
                 if (framesCounter >= (60/framesSpeed)){
@@ -76,13 +76,13 @@
         sprite=media.enemies;
         Rectangle frameRec = media.recFrameEnemies;
 
-        //Ajustando a direção:
+        //Ajustando a direï¿½ï¿½o:
         if(enm1.direction==1) //Direita
             frameRec.y = (float)sprite.height/8*2;
         else //Esquerda
             frameRec.y = (float)sprite.height/8;
 
-        //Só se mexe se não estiver no modo vulnerável
+        //Sï¿½ se mexe se nï¿½o estiver no modo vulnerï¿½vel
         if(enm1.status!=1){
             framesCounter2++;
             if (framesCounter2 >= (60/framesSpeed2)){
@@ -115,7 +115,7 @@
             initialFrame=9;
 
 
-        //Ajustando a direção:
+        //Ajustando a direï¿½ï¿½o:
         if(enm2.direction==1) //Direita
             frameRec.y = (float)sprite.height/8*2;
         else //Esquerda
@@ -123,7 +123,7 @@
 
         //Ajustando a velocidade:
 
-        //Só se mexe se não estiver no modo vulnerável
+        //Sï¿½ se mexe se nï¿½o estiver no modo vulnerï¿½vel
         currentFrame1=initialFrame;
         if(enm2.status!=1){
             framesCounter1++;
@@ -145,22 +145,22 @@
     ///---------------------Canos/Retornos--------------------
     void draw_fireplace(Rectangle fireplace, PHASE phase, SRC media){
         int fire=0;
-        //Checa colisão com um inimigo do tipo 1:
+        //Checa colisï¿½o com um inimigo do tipo 1:
         for(int e=0; e<phase.numEnem1; e++){
             if(CheckCollisionRecs(fireplace, phase.enemies1[e].rec))
                 fire=1;
         }
-        //Checa colisão com um inimigo do tipo 2:
+        //Checa colisï¿½o com um inimigo do tipo 2:
         for(int e=0; e<phase.numEnem2; e++){
             if(CheckCollisionRecs(fireplace, phase.enemies2[e].rec))
                 fire=1;
         }
-        //Checa colisão com as moedas:
+        //Checa colisï¿½o com as moedas:
         for(int e=0; e<phase.numEnem2; e++){
             if(CheckCollisionRecs(fireplace, phase.enemies2[e].rec))
                 fire=1;
         }
-    //    Se colidiram, desenhar a lareira com fogo. Senão, desenhar sem:
+    //    Se colidiram, desenhar a lareira com fogo. Senï¿½o, desenhar sem:
         if(fire)
             DrawTexture(media.fireplaceGreen, fireplace.x, fireplace.y, WHITE);
         else
@@ -242,11 +242,11 @@ void win_game(SRC media){
     ///---------------Escolher a casa----------------
 const int maxString = 30;
 int two_answers(SRC media, char question[maxString], char opt1[maxString], char opt2[maxString]){
-    Vector2 coordTitle = (Vector2){400,275}; //Coordenada do título
+    Vector2 coordTitle = (Vector2){400,275}; //Coordenada do tï¿½tulo
     int selected=0;
     int fontSize=40;
     Color color1=RED, color2=BLACK;
-    //---------- Atualizações ------------
+    //---------- Atualizaï¿½ï¿½es ------------
     while(!IsKeyPressed(KEY_ENTER)){
         UpdateMusicStream(media.hat_song);
         if(IsKeyPressed(KEY_UP)){
@@ -332,7 +332,7 @@ void catch_letter(SRC media){
         if(CheckCollisionRecs(hero.rec, rec_letter))
             collected=1;
 
-        ///---------- Herói ------------
+        ///---------- Herï¿½i ------------
         if(IsKeyDown(KEY_LEFT)){
             hero.direction = -1;
             hero.rec.x -= hero.speedX;
@@ -418,7 +418,7 @@ int sorting_hat(SRC media){
     char huf[3][20] = {"Loyal", "Patient", "Friendly"};
     char house[3][20];
 
-//    Vector2 coordTitle = (Vector2){150,75}; //Coordenada do título
+//    Vector2 coordTitle = (Vector2){150,75}; //Coordenada do tï¿½tulo
     Vector2 pos;
     Color background;
 
@@ -492,7 +492,7 @@ int sorting_hat(SRC media){
             strcpy(house[i], huf[i]);
     }
     Rectangle rec = {media.recFrameHouses.x*pos.x, media.recFrameHouses.y*pos.y, media.recFrameHouses.width, media.recFrameHouses.height};
-    while(!IsKeyDown(KEY_SPACE)){
+    while(!IsKeyPressed(KEY_ENTER)){
         UpdateMusicStream(media.hat_song);
         BeginDrawing();
         ClearBackground(background);
@@ -502,7 +502,7 @@ int sorting_hat(SRC media){
             DrawText(house[i], 25+(SCREEN_WIDTH-MeasureText(house[i], 30))/2, 400+i*40, 30, BLACK);
         }
         if(time(NULL)%2)
-            DrawText("Press SPACE to continue", 410, 525, 30, RAYWHITE);
+            DrawText("Press ENTER to continue", 410, 525, 30, RAYWHITE);
         EndDrawing();
     }
     switch(chosen){
@@ -537,11 +537,11 @@ void next_phase(SRC media){
 
 /*
 int house_choice(SRC media){
-    Vector2 coordTitle = (Vector2){140,45}; //Coordenada do título
+    Vector2 coordTitle = (Vector2){140,45}; //Coordenada do tï¿½tulo
 
-    //Inicialização
-    SetMusicVolume(media->HPthemeSong, 1.0); //Escolhendo o volume da música
-    PlayMusicStream(media->HPthemeSong); //Tocando a música tema
+    //Inicializaï¿½ï¿½o
+    SetMusicVolume(media->HPthemeSong, 1.0); //Escolhendo o volume da mï¿½sica
+    PlayMusicStream(media->HPthemeSong); //Tocando a mï¿½sica tema
 
     Vector2 posFront = {900, 400};
     Vector2 posFrontHP = {200, 400};
@@ -555,8 +555,8 @@ int house_choice(SRC media){
     int framesCounter = 0;
     int framesSpeed = 4;
 
-    //Definições:
-    SetTargetFPS(60); //Velocidade de reprodução do jogo (frames per second)
+    //Definiï¿½ï¿½es:
+    SetTargetFPS(60); //Velocidade de reproduï¿½ï¿½o do jogo (frames per second)
     char messages[MENU_OPTIONS][20]={ //Mensagens
         "New game",
         "Continue game",
@@ -568,7 +568,7 @@ int house_choice(SRC media){
     };
     int posx[MENU_OPTIONS]; //coordenada x da mensagem
     int posy[MENU_OPTIONS]; //coordenada y da mensagem
-    int selected=0; //posição do jogador (inicia na primeira opção)
+    int selected=0; //posiï¿½ï¿½o do jogador (inicia na primeira opï¿½ï¿½o)
     int i; //contador
     const int fontSize = 30; //tamanho da fonte
     Color color;
@@ -584,27 +584,27 @@ int house_choice(SRC media){
     posx[5]=536; //About us
     posx[6]=570; //Exit
 
-    //Mensagem espaçada no eixo y:
+    //Mensagem espaï¿½ada no eixo y:
     posy[0]=300; //tamanho definido arbitrariamente
     for(i=1; i<MENU_OPTIONS; i++){
-        posy[i]=posy[i-1]+fontSize+10; //distância de 10 entre as mensagens
+        posy[i]=posy[i-1]+fontSize+10; //distï¿½ncia de 10 entre as mensagens
     }
 
     //Loop principal (da tecla ENTER):
-    do{ //Enquanto não apertar enter
+    do{ //Enquanto nï¿½o apertar enter
         UpdateMusicStream(media->HPthemeSong);
-        //Atualizações:
+        //Atualizaï¿½ï¿½es:
         if(IsKeyPressed(KEY_UP)){ //Se apertar tecla para cima
-            if(selected==0)    //Se for o primeiro da lista, ir para o último
+            if(selected==0)    //Se for o primeiro da lista, ir para o ï¿½ltimo
                 selected = MENU_OPTIONS-1;
             else
-                selected--;    //Senão for o primeiro da lista, diminuir o índice (subir uma posição)
+                selected--;    //Senï¿½o for o primeiro da lista, diminuir o ï¿½ndice (subir uma posiï¿½ï¿½o)
             PlaySound(media->fast_spell);
         }else if(IsKeyPressed(KEY_DOWN)){ //Se apertar tecla para baixo
-            if(selected==MENU_OPTIONS-1) //Se for o último da lista, ir para o primeiro
+            if(selected==MENU_OPTIONS-1) //Se for o ï¿½ltimo da lista, ir para o primeiro
                 selected = 0;
             else
-                selected++;    //Senão for o último da lista, aumentar o índice (descer uma posição)
+                selected++;    //Senï¿½o for o ï¿½ltimo da lista, aumentar o ï¿½ndice (descer uma posiï¿½ï¿½o)
             PlaySound(media->fast_spell);
         }
         if(position.x>SCREEN_WIDTH)
