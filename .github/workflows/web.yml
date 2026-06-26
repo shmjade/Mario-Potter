@@ -1,0 +1,42 @@
+name: web-build
+
+# Compila o Mario-Potter (raylib) para WebAssembly na nuvem — evita o bloqueio
+# do Google Santa ao emcc local. Resultado: artifact "web-build" (baixe o .zip e
+# suba no itch.io como projeto HTML, "played in the browser"; index.html na raiz).
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Emscripten
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: latest
+
+      # Cacheia a raylib já compilada para web (inclui headers + libraylib.web.a),
+      # evitando reclonar/recompilar a cada run. Chave fixada na versão da raylib.
+      - name: Cache raylib (web)
+        uses: actions/cache@v4
+        with:
+          path: raylib
+          key: raylib-web-5.5-${{ runner.os }}
+
+      - name: Build (WASM)
+        run: bash build_web.sh
+
+      - name: Upload web build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: web/
+          if-no-files-found: error
