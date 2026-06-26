@@ -17,12 +17,24 @@ cd "$(dirname "$0")"
 RAYLIB_VERSION="5.5"
 
 # --- 1. raylib para web (libraylib.web.a) ---------------------------------
-if [ ! -f raylib/src/libraylib.web.a ]; then
+# O nome do .a varia entre versões da raylib (libraylib.web.a ou libraylib.a),
+# então localizamos via find em vez de assumir.
+find_raylib_lib() { find raylib/src -maxdepth 1 -name 'libraylib*.a' 2>/dev/null | head -1; }
+
+if [ -z "$(find_raylib_lib)" ]; then
   if [ ! -d raylib ]; then
     git clone --depth 1 --branch "$RAYLIB_VERSION" https://github.com/raysan5/raylib.git
   fi
   emmake make -C raylib/src PLATFORM=PLATFORM_WEB -B
 fi
+
+RAYLIB_LIB="$(find_raylib_lib)"
+if [ -z "$RAYLIB_LIB" ]; then
+  echo "ERRO: libraylib.a não foi gerada. Arquivos .a encontrados:" >&2
+  find raylib -name '*.a' >&2 || true
+  exit 1
+fi
+echo "raylib lib: $RAYLIB_LIB"
 
 mkdir -p web
 
@@ -45,7 +57,7 @@ for a in "${AUDIO[@]}";  do PRELOAD+=( --preload-file "Audio/$a" ); done
 emcc main.c Sources/*.c \
   -IHeaders -Iraylib/src \
   -O2 -std=c99 \
-  raylib/src/libraylib.web.a \
+  "$RAYLIB_LIB" \
   -sUSE_GLFW=3 \
   -sASYNCIFY \
   -sASYNCIFY_STACK_SIZE=131072 \
