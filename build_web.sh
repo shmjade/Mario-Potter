@@ -62,6 +62,7 @@ emcc main.c Sources/*.c \
   -sASYNCIFY \
   -sASYNCIFY_STACK_SIZE=131072 \
   -sALLOW_MEMORY_GROWTH=1 \
+  --pre-js web_audio_unlock.js \
   "${PRELOAD[@]}" \
   -o web/index.html
 
