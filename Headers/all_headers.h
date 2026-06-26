@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <strings.h>
 #include "raylib.h"
+#include "web_compat.h" // shim WebAssembly (yield do EndDrawing sob Emscripten)
 #include <time.h>
 #include <stdlib.h>
 

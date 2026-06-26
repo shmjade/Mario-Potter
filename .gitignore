@@ -1,0 +1,6 @@
+# Saídas do build web (geradas pelo build_web.sh / CI)
+web/
+raylib/
+
+# Logs temporários
+*.log
