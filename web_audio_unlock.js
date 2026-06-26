@@ -1,41 +1,44 @@
 // =========================================================================
-// Desbloqueio de áudio no navegador (política de autoplay).
+// Desbloqueio de áudio no navegador (política de autoplay) + diagnóstico.
 //
-// raylib/miniaudio cria um AudioContext logo na InitAudioDevice(), antes de
-// qualquer gesto do usuário — então o navegador o mantém "suspended" e nada
-// toca. Aqui interceptamos a criação do AudioContext, guardamos as instâncias
-// e as retomamos (resume()) no primeiro clique/tecla/toque.
+// raylib/miniaudio cria um AudioContext na InitAudioDevice(), antes de qualquer
+// gesto — então o navegador o mantém "suspended". Interceptamos a criação do
+// AudioContext, guardamos as instâncias e as retomamos no primeiro gesto.
 //
-// Injetado no bundle via `emcc --pre-js`, roda antes do runtime WASM, então a
-// substituição de window.AudioContext já está ativa quando o miniaudio cria o
-// seu contexto.
+// Injetado via `emcc --pre-js`. Loga em [audio-unlock] quantos contextos foram
+// capturados e o estado de cada um após o gesto (diagnóstico).
 // =========================================================================
 (function () {
   var Native = window.AudioContext || window.webkitAudioContext;
-  if (!Native) return;
+  if (!Native) { console.log('[audio-unlock] sem AudioContext no navegador'); return; }
 
   var contexts = [];
-  function Wrapped(opts) {
-    var ctx = new Native(opts);
+  var gestured = false;
+  window.__rayAudioCtxs = contexts; // inspecionável no console
+
+  function tryResume(c) {
+    if (c && c.state === 'suspended' && typeof c.resume === 'function') c.resume();
+  }
+  function track(ctx) {
     contexts.push(ctx);
+    console.log('[audio-unlock] AudioContext criado (#' + contexts.length + '), state=' + ctx.state);
+    if (gestured) tryResume(ctx);
     return ctx;
   }
+  function Wrapped(opts) { return track(new Native(opts)); }
   Wrapped.prototype = Native.prototype;
   window.AudioContext = Wrapped;
   window.webkitAudioContext = Wrapped;
 
-  function resumeAll() {
-    for (var i = 0; i < contexts.length; i++) {
-      var c = contexts[i];
-      if (c && c.state === 'suspended' && typeof c.resume === 'function') {
-        c.resume();
-      }
-    }
+  function onGesture() {
+    gestured = true;
+    var states = [];
+    for (var i = 0; i < contexts.length; i++) { tryResume(contexts[i]); states.push(contexts[i].state); }
+    console.log('[audio-unlock] gesto: ' + contexts.length + ' contexto(s), states=' + states.join(','));
   }
-
   var events = ['pointerdown', 'mousedown', 'keydown', 'touchstart', 'click'];
-  for (var i = 0; i < events.length; i++) {
-    window.addEventListener(events[i], resumeAll, true);
-    document.addEventListener(events[i], resumeAll, true);
+  for (var j = 0; j < events.length; j++) {
+    window.addEventListener(events[j], onGesture, true);
+    document.addEventListener(events[j], onGesture, true);
   }
 })();
